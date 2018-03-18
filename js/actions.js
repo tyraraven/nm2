@@ -13,6 +13,8 @@ var incRevealed = false;
 var capRaiseRevealed = false;
 var combatRevealed = false;
 var deathStatRevealed = false;
+var hpTrainButtonRevealed = false;
+var atkTrainButtonRevealed = false;
 
 // time variables
 var firstTimeMessage = false;
@@ -68,6 +70,19 @@ function lookAction() {
             $("#train").click(trainPhase1);
         }
         tutorial++;
+    }
+}
+
+function trainHp() {
+    if (training < 150) {
+        alert('Not enough training, need 150 to increase hp.');
+        return false;
+    } else {
+        training -=150;
+        totalHp++;
+        hp++;
+        decorateToolTips();
+        trackTime();
     }
 }
 
@@ -146,6 +161,10 @@ function trainPhase1() {
             updateMainStory('The more you move around the more sure that you become: You are going to have to fight this creature.  Its time to start thinking about how that will work.');
             decorateToolTips();
             pulseStrongly();
+        } else if (!hpTrainButtonRevealed && training > 85) {
+            $('#trainHp')[0].style.display="block";
+            $('#trainHp').click(trainHp);
+            hpTrainButtonRevealed = true;
         } else if (training == trainingCap && capRaiseRevealed) {
             Math.round(trainingCap = trainingCap * capFactor);
             updateMainStory("Suddenly you feel a pulse and all of the coordination you had gained thus far drains out of you, but you feel like you have more potential.");
