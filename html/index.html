@@ -9,9 +9,19 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <title>Hello, world!</title>
+
+    <script type="text/javascript" src="../js/messages.js"> </script>
+    <script type="text/javascript" src="../js/actions.js"> </script>
 </head>
 <body>
-<h1>Hello, world!</h1>
+<div id="feedback">
+    <textarea class="form-control" rows="5" id="mainStory">
+        You awake in complete and total darkness with no idea who you are or how you got there.
+    </textarea>
+</div>
+<div id="characterActions">
+    <button id="look" onclick="testAlert()">Look Around</button>
+</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
