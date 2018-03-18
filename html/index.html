@@ -10,7 +10,7 @@
 
     <title>Necromental</title>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="../js/messages.js"> </script>
     <script type="text/javascript" src="../js/actions.js"> </script>
 </head>
@@ -20,8 +20,8 @@
     <div id="senseOfSelfStat" display="inline"><span>Sense of Self: </span><span id="sosValue" data-toggle="popover" data-trigger="hover" data-content="Cap: 0">0</span></div>
 </div>
 <div id="feedback">
-    <textarea class="form-control" rows="2" id="actionFeedback" style="display:none">You do nothing.</textarea>
-    <textarea class="form-control" rows="5" id="mainStory">You awake in complete and total darkness with no idea who you are or how you got there.</textarea>
+    <textarea class="form-control" rows="2" id="actionFeedback" style="display:none; border: solid;">You do nothing.</textarea>
+    <textarea class="form-control" rows="5" id="mainStory" style="border: solid;">You awake in complete and total darkness with no idea who you are or how you got there.</textarea>
 </div>
 <div id="characterActions">
     <button id="look">Consider</button>
