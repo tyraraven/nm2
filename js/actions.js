@@ -12,6 +12,7 @@ var capsRevealed = false;
 var incRevealed = false;
 var capRaiseRevealed = false;
 var combatRevealed = false;
+var deathStatRevealed = false;
 
 // time variables
 var firstTimeMessage = false;
@@ -23,6 +24,7 @@ var intelligence = 0;
 var hp = 1;
 var totalHp = 1;
 var atk = 1;
+var deaths = 1;
 
 // Incrementors
 var trainingInc = 1;
@@ -121,6 +123,9 @@ function decorateToolTips() {
         $('#hpValue')[0].innerHTML='' + hp + '/' + totalHp;
         $('#atkValue')[0].innerHTML=atk;
     }
+    if (deathStatRevealed) {
+        $('#deathValue')[0].innerHTML=deaths;
+    }
 }
 
 function trainPhase1() {
@@ -190,7 +195,7 @@ function trackTime() {
         } else if (training < 100) {
             updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
         } else {
-            updateMainStory("Imagine you are fighting in this really cool combat system right now.  Sadly I have not writen it yet, so suck it, you die.");
+            updateMainStory("Imagine you are fighting in this really cool combat system right now.  Sadly I have not written it yet, so suck it, you die.");
         }
         resetPhase1();
     }
@@ -209,6 +214,15 @@ function resetPhase1() {
       .delay(400)
       .animate({borderColor:'black'}, 1000);
     tick = 0;
+
+    deaths++;
+    if (deaths >= 10) {
+        updateMainStory('As you die you notice that the pulse coming from your chest is getting a bit stronger each time.  When you come back to you notice that some of the blue light that has come from it is absorbed back in, causing the glow to become slightly stronger over the cycles.  You are not sure what use this is for you, bit you think you can estimate how large the effect is from here onward.');
+        $('#deathStat')[0].style.display="block";
+        pulseStrongly();
+        deathStatRevealed=true;
+    }
+    decorateToolTips();
 };
 
 function resetTickMessages() {
