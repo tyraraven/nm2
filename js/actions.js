@@ -1,3 +1,6 @@
+// Version number
+var versionNumber = '0.31818';
+
 // Awareness Intro Game Stat
 var isAware = true;
 var awareness = 0;
@@ -219,4 +222,5 @@ function updateMainStory(message) {
 
 $( document ).ready(function() {
     $('#look').click(lookAction);
+    $('#versionNumber')[0].innerHTML = 'Version: ' + giotversionNumber;
 });
