@@ -14,13 +14,16 @@
     <script type="text/javascript" src="../js/actions.js"> </script>
 </head>
 <body>
+<div id="mainStats" style="display:none">
+    <div id="awarenessStat"><span>Sense of Self: </span><span id="sosValue">0</span></div>
+</div>
 <div id="feedback">
-    <textarea class="form-control" rows="5" id="mainStory">
-        You awake in complete and total darkness with no idea who you are or how you got there.
+    <textarea class="form-control" rows="5" id="mainStory">You awake in complete and total darkness with no idea who you are or how you got there.
     </textarea>
 </div>
 <div id="characterActions">
-    <button id="look" onclick="testAlert()">Look Around</button>
+    <button id="look" onclick="lookAction()">Consider</button>
+    <button id="train" onclick="trainAction()" style="display:none">Train</button>
 </div>
 
 <!-- Optional JavaScript -->
