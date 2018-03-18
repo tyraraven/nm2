@@ -169,7 +169,13 @@ function trackTime() {
         secondTimeMessage = true;
     } else if (tick >=25) {
         // Check stats/abilities either overcome creature and goto phase 2, or reset allowing level up.
-        updateMainStory('The creature bursts into the room, and finishes you off just like before.');
+        if (intelligence < 100 && training < 100) {
+            updateMainStory('The creature bursts into the room, and finishes you off just like before.');
+        } else if (intelligence < 100) {
+            updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
+        } else if (training < 100) {
+            updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
+        }
         resetPhase1();
     }
     tick++;
@@ -180,11 +186,19 @@ function resetPhase1() {
     // Scores
     resetAbilityScores();
 
+    // Tick messages
+    resetTickMessages();
+
     $('#mainStory').animate({borderColor:'red'}, 400)
       .delay(400)
       .animate({borderColor:'black'}, 1000);
     tick = 0;
 };
+
+function resetTickMessages() {
+    firstTimeMessage = false;
+    secondTimeMessage = false;
+}
 
 function resetAbilityScores() {
     intelligence = 0;
