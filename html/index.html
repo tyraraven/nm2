@@ -8,27 +8,28 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Necromental</title>
 
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script type="text/javascript" src="../js/messages.js"> </script>
     <script type="text/javascript" src="../js/actions.js"> </script>
 </head>
 <body>
 <div id="mainStats" style="display:none">
-    <div id="awarenessStat"><span>Sense of Self: </span><span id="sosValue">0</span></div>
+    <div id="curiosity" display="inline"><span>Intelligence: </span><span id="intelligenceValue" data-toggle="popover" data-trigger="hover" data-content="Cap: 0">0</span></div>
+    <div id="senseOfSelfStat" display="inline"><span>Sense of Self: </span><span id="sosValue" data-toggle="popover" data-trigger="hover" data-content="Cap: 0">0</span></div>
 </div>
 <div id="feedback">
-    <textarea class="form-control" rows="5" id="mainStory">You awake in complete and total darkness with no idea who you are or how you got there.
-    </textarea>
+    <textarea class="form-control" rows="2" id="actionFeedback" style="display:none">You do nothing.</textarea>
+    <textarea class="form-control" rows="5" id="mainStory">You awake in complete and total darkness with no idea who you are or how you got there.</textarea>
 </div>
 <div id="characterActions">
-    <button id="look" onclick="lookAction()">Consider</button>
-    <button id="train" onclick="trainAction()" style="display:none">Train</button>
+    <button id="look">Consider</button>
+    <button id="train" style="display:none">Train</button>
 </div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
