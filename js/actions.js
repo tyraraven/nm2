@@ -7,6 +7,7 @@ var tick=0;
 // Feature Unlocks
 var capsRevealed = false;
 var incRevealed = false;
+var capRaiseRevealed = false;
 
 // time variables
 var firstTimeMessage = false;
@@ -25,8 +26,9 @@ var trainingMult = 1;
 var intelligenceMult = 1;
 
 // Caps
-var trainingCap = 50;
-var intelligenceCap = 50;
+var capFactor = 1.5;
+var trainingCap = 100;
+var intelligenceCap = 100;
 
 // Per pass bonus checks
 var hasAwardedIntelligenceIncCap = false;
@@ -46,7 +48,7 @@ function lookAction() {
         }
     } else {
         updateMainStory(tutorialMessages[tutorial]);
-        if (tutorial == 4) {
+        if (tutorial == 3) {
             document.getElementById('mainStats').style.display='block';
             document.getElementById('actionFeedback').style.display='block';
             document.getElementById('train').style.display='block';
@@ -69,16 +71,30 @@ function lookPhase1() {
         pulseGently();
         decorateToolTips();
     } else if (intelligence >= 25 && !capsRevealed) {
-        $('[data-toggle="popover"]').popover();
+        $('#intelligenceCapContainer')[0].style.display="inline";
+        $('#trainingCapContainer')[0].style.display="inline";
         capsRevealed = true;
         decorateToolTips();
         updateMainStory('You are starting to understand the limits of your present existence. (You can now see your ability caps by hovering over them in the statistics panel)');
         pulseStrongly();
     } else if (intelligence >= 45 && !incRevealed) {
         incRevealed = true;
+        console;
+        $('#intelligenceIncContainer')[0].style.display="inline";
+        $('#trainingIncContainer')[0].style.display="inline";
         decorateToolTips();
         updateMainStory('You now know that you are growing faster as you loop through the cycle, and can gauge its rate of growth! (You can now see how fast your ability scores are going up per click in the tooltips)');
         pulseStrongly();
+    } else if (intelligence >= 75 && !capRaiseRevealed) {
+        updateMainStory('There is a limit to your abilities, but is it a hard limit?  You think if you were to spend a large amount of effort when you are at your limit, you might be able to train yourself to further heights in the next cycle.');
+        updateMainStory('(If you are at cap, and you press the training button again you will consume all of your currently banked attribute, but in exchange your cap will increase.)');
+        capRaiseRevealed = true;
+        pulseStrongly();
+    } else if (intelligence == intelligenceCap  && capRaiseRevealed) {
+        Math.round(intelligenceCap = intelligenceCap * capFactor);
+        updateMainStory("Suddenly you feel a pulse and all of the knowledge you had gained thus far drains out of you, but you feel like you have more potential.");
+        pulseGently();
+        decorateToolTips();
     }
     else {
         updateActionFeedback('You carefully consider the situation you are in.');
@@ -86,23 +102,18 @@ function lookPhase1() {
 }
 
 function decorateToolTips() {
-    let intMessage = '';
-    let trainingMessage = '';
     if (capsRevealed) {
-        intMessage += 'Cap: ' + intelligenceCap;
-        trainingMessage += 'Cap: ' + trainingCap;
+        $('#intelligenceCap')[0].innerHTML=intelligenceCap;
+        $('#trainingCap')[0].innerHTML=trainingCap;
     }
     if (incRevealed) {
-        intMessage += ' Incrementer: ' + intelligenceInc;
-        trainingMessage += ' Incrementer: ' + trainingInc;
+        $('#intelligenceInc')[0].innerHTML=intelligenceInc;
+        $('#trainingInc')[0].innerHTML=trainingInc;
     }
-
-    $(intelligenceValue).attr('data-content',intMessage);
-    $(sosValue).attr('data-content',trainingMessage);
 }
 
 function trainPhase1() {
-    incSenseOfSelf();
+    incTraining();
         if (!hasAwardedTrainingIncCap && training >= 10 && trainingInc < 10) {
             trainingInc++;
             hasAwardedTrainingIncCap = true;
@@ -111,8 +122,15 @@ function trainPhase1() {
             } else if (trainingInc < 10) {
                 updateMainStory('You are getting the hang of this new body, you almost no longer feel the difference.');
             }
+            decorateToolTips();
             pulseGently();
-        } else {
+        } else if (training == trainingCap && capRaiseRevealed) {
+            Math.round(trainingCap = trainingCap * capFactor);
+            updateMainStory("Suddenly you feel a pulse and all of the coordination you had gained thus far drains out of you, but you feel like you have more potential.");
+            pulseGently();
+            decorateToolTips();
+        }
+        else {
             updateActionFeedback('You attempt to figure out how to move around in this body more effectively');
         }
 
@@ -133,7 +151,7 @@ function incIntellect() {
     if (intelligence > intelligenceCap) {
         intelligence = intelligenceCap;
     }
-    document.getElementById('intelligenceValue').innerHTML = intelligence;
+    $('#intelligenceValue')[0].innerHTML = intelligence;
 
     // Finally track the tick
     trackTime();
@@ -171,19 +189,19 @@ function resetAbilityScores() {
     training = 0;
     hasAwardedTrainingIncCap = false;
     hasAwardedIntelligenceIncCap = false;
-    updateSenseOfSelf(training);
+    updateTraining(training);
 }
 
-function incSenseOfSelf() {
+function incTraining() {
     training = training + (trainingInc * trainingMult);
     if (training > trainingCap) {
         training = trainingCap;
     }
-    updateSenseOfSelf(training);
+    updateTraining(training);
 }
 
-function updateSenseOfSelf(training) {
-    document.getElementById('sosValue').innerHTML = training;
+function updateTraining(training) {
+    $('#trainingValue')[0].innerHTML = training;
 }
 
 function updateIntelligence(intelligence) {

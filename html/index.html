@@ -16,8 +16,16 @@
 </head>
 <body>
 <div id="mainStats" style="display:none">
-    <div id="curiosity" display="inline"><span>Intelligence: </span><span id="intelligenceValue" data-toggle="popover" data-trigger="hover" data-content="Cap: 0">0</span></div>
-    <div id="senseOfSelfStat" display="inline"><span>Sense of Self: </span><span id="sosValue" data-toggle="popover" data-trigger="hover" data-content="Cap: 0">0</span></div>
+    <div id="curiosity">
+        <span>Intelligence: </span><span id="intelligenceValue">0</span>
+        <span id="intelligenceCapContainer" style="display:none"><span>Cap:</span><span id="intelligenceCap">0</span></span>
+        <span id="intelligenceIncContainer" style="display:none"><span>Inc/Turn:</span><span id="intelligenceInc">0</span></span>
+    </div>
+    <div id="senseOfSelfStat">
+        <span>Sense of Self: </span><span id="trainingValue" >0</span>
+        <span id="trainingCapContainer" style="display:none"><span>Cap:</span><span id="trainingCap">0</span></span>
+        <span id="trainingIncContainer" style="display:none"><span>Inc/Turn:</span><span id="trainingInc">0</span></span>
+    </div>
 </div>
 <div id="feedback">
     <textarea class="form-control" rows="2" id="actionFeedback" style="display:none; border: solid;">You do nothing.</textarea>
