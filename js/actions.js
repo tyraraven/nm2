@@ -62,7 +62,8 @@ function lookPhase1() {
         $(intelligenceValue).attr('data-content','Cap: ' + intelligenceCap);
         $(sosValue).attr('data-content','Cap: ' + trainingCap);
         updateMainStory('You are starting to understand the limits of your present existence. (You can now see your ability caps by hovering over them in the statistics panel)');
-        capsRevealed = true;
+        capsRevealed = true
+
     }
     else {
         updateActionFeedback('You carefully consider the situation you are in.');
