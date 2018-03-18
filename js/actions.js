@@ -11,6 +11,7 @@ var tick=0;
 var capsRevealed = false;
 var incRevealed = false;
 var capRaiseRevealed = false;
+var combatRevealed = false;
 
 // time variables
 var firstTimeMessage = false;
@@ -19,6 +20,9 @@ var secondTimeMessage = false;
 // Stats
 var training = 0;
 var intelligence = 0;
+var hp = 1;
+var totalHp = 1;
+var atk = 1;
 
 // Incrementors
 var trainingInc = 1;
@@ -113,6 +117,10 @@ function decorateToolTips() {
         $('#intelligenceInc')[0].innerHTML=intelligenceInc;
         $('#trainingInc')[0].innerHTML=trainingInc;
     }
+    if (combatRevealed) {
+        $('#hpValue')[0].innerHTML='' + hp + '/' + totalHp;
+        $('#atkValue')[0].innerHTML=atk;
+    }
 }
 
 function trainPhase1() {
@@ -127,6 +135,12 @@ function trainPhase1() {
             }
             decorateToolTips();
             pulseGently();
+        } else if (!combatRevealed && training > 50) {
+            combatRevealed = true;
+            $('#combat')[0].style.display="block";
+            updateMainStory('The more you move around the more sure that you become: You are going to have to fight this creature.  Its time to start thinking about how that will work.');
+            decorateToolTips();
+            pulseStrongly();
         } else if (training == trainingCap && capRaiseRevealed) {
             Math.round(trainingCap = trainingCap * capFactor);
             updateMainStory("Suddenly you feel a pulse and all of the coordination you had gained thus far drains out of you, but you feel like you have more potential.");
@@ -236,5 +250,5 @@ function updateMainStory(message) {
 
 $( document ).ready(function() {
     $('#look').click(lookAction);
-    $('#versionNumber')[0].innerHTML = 'Version: ' + giotversionNumber;
+    $('#versionNumber')[0].innerHTML = 'Version: ' + versionNumber;
 });

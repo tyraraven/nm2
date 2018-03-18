@@ -8,6 +8,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <!-- custom css -->
+    <link rel="stylesheet" href="../css/styles.css">
+
+
     <title>Necromental</title>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
@@ -16,15 +20,21 @@
 </head>
 <body>
 <div id="mainStats" style="display:none">
-    <div id="curiosity">
+    <span class="statsBox">
         <span>Intelligence: </span><span id="intelligenceValue">0</span>
         <span id="intelligenceCapContainer" style="display:none"><span>Cap:</span><span id="intelligenceCap">0</span></span>
-        <span id="intelligenceIncContainer" style="display:none"><span>Inc/Turn:</span><span id="intelligenceInc">0</span></span>
-    </div>
-    <div id="senseOfSelfStat">
+        <span id="intelligenceIncContainer" style="display:none"><span>Inc/Click:</span><span id="intelligenceInc">0</span></span>
+    </span>
+    <span class="statsBox">
         <span>Sense of Self: </span><span id="trainingValue" >0</span>
         <span id="trainingCapContainer" style="display:none"><span>Cap:</span><span id="trainingCap">0</span></span>
-        <span id="trainingIncContainer" style="display:none"><span>Inc/Turn:</span><span id="trainingInc">0</span></span>
+        <span id="trainingIncContainer" style="display:none"><span>Inc/Click:</span><span id="trainingInc">0</span></span>
+    </span>
+</div>
+<div id="combat" style="display:none">
+    <div id="combatTraining">
+        <span class="statsBox" id="hpContainer"><span>Hp: </span><span id="hpValue">0</span></span>
+        <span class="statsBox" id="atkContainer"><span>Atk: </span><span id="atkValue">0</span></span>
     </div>
 </div>
 <div id="feedback">
