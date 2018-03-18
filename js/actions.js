@@ -189,6 +189,8 @@ function trackTime() {
             updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
         } else if (training < 100) {
             updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
+        } else {
+            updateMainStory("Imagine you are fighting in this really cool combat system right now.  Sadly I have not writen it yet, so suck it, you die.");
         }
         resetPhase1();
     }
