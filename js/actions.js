@@ -102,6 +102,17 @@ function trainAutoTrainingInc() {
     }
 }
 
+function trainAtk() {
+    if (training < 150) {
+        alert('Not enough training, need 150 to increase hp.');
+        return false;
+    } else {
+        training -=150;
+        atk++;
+        trackTime();
+    }
+}
+
 function trainHp() {
     if (training < 150) {
         alert('Not enough training, need 150 to increase hp.');
@@ -159,9 +170,12 @@ function lookPhase1() {
     else {
         updateActionFeedback('You carefully consider the situation you are in.');
     }
+    trackTime();
 }
 
 function decorateToolTips() {
+    $('#intelligenceValue')[0].innerHTML = intelligence;
+    $('#trainingValue')[0].innerHTML = training;
     if (capsRevealed) {
         $('#intelligenceCap')[0].innerHTML=intelligenceCap;
         $('#trainingCap')[0].innerHTML=trainingCap;
@@ -203,6 +217,10 @@ function trainPhase1() {
             $('#trainHp')[0].style.display="inline";
             $('#trainHp').click(trainHp);
             hpTrainButtonRevealed = true;
+        } else if (!atkTrainButtonRevealed && training > 125) {
+            $('#trainAtk')[0].style.display="inline";
+            $('#trainAtk').click(trainAtk);
+            atkTrainButtonRevealed = true;
         } else if (training == trainingCap && capRaiseRevealed) {
             Math.round(trainingCap = trainingCap * capFactor);
             training = 0;
@@ -230,10 +248,6 @@ function incIntellect() {
     if (intelligence > intelligenceCap) {
         intelligence = intelligenceCap;
     }
-    $('#intelligenceValue')[0].innerHTML = intelligence;
-
-    // Finally track the tick
-    trackTime();
 }
 
 function autoIncIntellect() {
@@ -320,7 +334,6 @@ function incTraining() {
     if (training > trainingCap) {
         training = trainingCap;
     }
-    updateTraining(training);
 }
 
 function updateTraining(training) {
