@@ -15,6 +15,7 @@ var combatRevealed = false;
 var deathStatRevealed = false;
 var hpTrainButtonRevealed = false;
 var atkTrainButtonRevealed = false;
+var autoIncTrainingRevealed = false;
 
 // time variables
 var firstTimeMessage = false;
@@ -31,6 +32,10 @@ var deaths = 1;
 // Incrementors
 var trainingInc = 1;
 var intelligenceInc = 1;
+
+// Auto incrementors
+var intelligenceAutoInc = 0;
+var trainingAutoInc = 0;
 
 // Multipliers
 var trainingMult = 1;
@@ -73,6 +78,30 @@ function lookAction() {
     }
 }
 
+function trainAutoIntInc() {
+    if (deaths < 10) {
+        alert('You need more temporal energy to train this stat');
+        return false;
+    } else {
+        deaths -= 10;
+        intelligenceAutoInc++;
+        updateActionFeedback('You channel temporal energy towards your thinking time, old you is helping new you be smarter');
+        trackTime();
+    }
+}
+
+function trainAutoTrainingInc() {
+    if (deaths < 10) {
+        alert('You need more temporal energy to train this stat');
+        return false;
+    } else {
+        deaths -= 10;
+        trainingAutoInc++;
+        updateActionFeedback('You channel temporal energy towards your training time, old you is helping new you be stronger');
+        trackTime();
+    }
+}
+
 function trainHp() {
     if (training < 150) {
         alert('Not enough training, need 150 to increase hp.');
@@ -81,7 +110,6 @@ function trainHp() {
         training -=150;
         totalHp++;
         hp++;
-        decorateToolTips();
         trackTime();
     }
 }
@@ -93,12 +121,10 @@ function lookPhase1() {
         hasAwardedIntelligenceIncCap = true;
         updateMainStory('Thinking about your situation more you realize that the item on your chest must be somehow relaying your intellect back in time each time you die.  You wonder if you can somehow exploit that.');
         pulseGently();
-        decorateToolTips();
     } else if (intelligence >= 25 && !capsRevealed) {
         $('#intelligenceCapContainer')[0].style.display="inline";
         $('#trainingCapContainer')[0].style.display="inline";
         capsRevealed = true;
-        decorateToolTips();
         updateMainStory('You are starting to understand the limits of your present existence. (You can now see your ability caps by hovering over them in the statistics panel)');
         pulseStrongly();
     } else if (intelligence >= 45 && !incRevealed) {
@@ -106,7 +132,6 @@ function lookPhase1() {
         console;
         $('#intelligenceIncContainer')[0].style.display="inline";
         $('#trainingIncContainer')[0].style.display="inline";
-        decorateToolTips();
         updateMainStory('You now know that you are growing faster as you loop through the cycle, and can gauge its rate of growth! (You can now see how fast your ability scores are going up per click in the tooltips)');
         pulseStrongly();
     } else if (intelligence >= 75 && !capRaiseRevealed) {
@@ -114,11 +139,22 @@ function lookPhase1() {
         updateMainStory('(If you are at cap, and you press the training button again you will consume all of your currently banked attribute, but in exchange your cap will increase.)');
         capRaiseRevealed = true;
         pulseStrongly();
-    } else if (intelligence == intelligenceCap  && capRaiseRevealed) {
+    } else if (intelligence > 150 && deathStatRevealed && !autoIncTrainingRevealed) {
+        updateMainStory("Thinking about all of this temporal energy you are gaining you wonder if you could somehow take some of the time you are spending training each cycle into the next cycle.");
+        updateMainStory("You think it should be possible, and almost on cue a panel lights up on the side of the room, glowing the same blue color that your chest does. ");
+        updateMainStory("On the panel is an interface, with multiple buttons.  These buttons seem to correspond to activities you have been doing.");
+        autoIncTrainingRevealed=true;
+        $('#intelligenceAutoIncContainer')[0].style.display="inline";
+        $('#trainingAutoIncContainer')[0].style.display="inline";
+        $('#intelligenceAutoIncContainer').click(trainAutoIntInc);
+        $('#trainingAutoIncContainer').click(trainAutoTrainingInc);
+        pulseStrongly();
+    }
+    else if (intelligence == intelligenceCap  && capRaiseRevealed) {
         Math.round(intelligenceCap = intelligenceCap * capFactor);
+        intelligence = 0;
         updateMainStory("Suddenly you feel a pulse and all of the knowledge you had gained thus far drains out of you, but you feel like you have more potential.");
         pulseGently();
-        decorateToolTips();
     }
     else {
         updateActionFeedback('You carefully consider the situation you are in.');
@@ -141,6 +177,10 @@ function decorateToolTips() {
     if (deathStatRevealed) {
         $('#deathValue')[0].innerHTML=deaths;
     }
+    if (autoIncTrainingRevealed) {
+        $('#intelligenceAutoInc')[0].innerHTML=intelligenceAutoInc;
+        $('#trainingAutoInc')[0].innerHTML=trainingAutoInc;
+    }
 }
 
 function trainPhase1() {
@@ -153,23 +193,21 @@ function trainPhase1() {
             } else if (trainingInc < 10) {
                 updateMainStory('You are getting the hang of this new body, you almost no longer feel the difference.');
             }
-            decorateToolTips();
             pulseGently();
         } else if (!combatRevealed && training > 50) {
             combatRevealed = true;
             $('#combat')[0].style.display="block";
             updateMainStory('The more you move around the more sure that you become: You are going to have to fight this creature.  Its time to start thinking about how that will work.');
-            decorateToolTips();
             pulseStrongly();
         } else if (!hpTrainButtonRevealed && training > 85) {
-            $('#trainHp')[0].style.display="block";
+            $('#trainHp')[0].style.display="inline";
             $('#trainHp').click(trainHp);
             hpTrainButtonRevealed = true;
         } else if (training == trainingCap && capRaiseRevealed) {
             Math.round(trainingCap = trainingCap * capFactor);
+            training = 0;
             updateMainStory("Suddenly you feel a pulse and all of the coordination you had gained thus far drains out of you, but you feel like you have more potential.");
             pulseGently();
-            decorateToolTips();
         }
         else {
             updateActionFeedback('You attempt to figure out how to move around in this body more effectively');
@@ -198,6 +236,18 @@ function incIntellect() {
     trackTime();
 }
 
+function autoIncIntellect() {
+    if (intelligenceAutoInc > 0) {
+        intelligence += intelligenceAutoInc;
+    }
+}
+
+function autoIncTraining() {
+    if (trainingAutoInc > 0) {
+        training += trainingAutoInc;
+    }
+}
+
 function trackTime() {
     if (!firstTimeMessage && tick >= 10) {
         updateMainStory('You hear soft pounding on the door, the creature has arrived');
@@ -218,6 +268,13 @@ function trackTime() {
         }
         resetPhase1();
     }
+
+    // FIre the auto inc's
+    autoIncTraining();
+    autoIncIntellect();
+
+    // This is now centralized and will be called each tick
+    decorateToolTips();
     tick++;
 }
 
