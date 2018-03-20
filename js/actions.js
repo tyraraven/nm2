@@ -17,6 +17,10 @@ var hpTrainButtonRevealed = false;
 var atkTrainButtonRevealed = false;
 var autoIncTrainingRevealed = false;
 var combatSkillsRevealed = false;
+var firstCombatUnlocksRevealed = false;
+
+// Special Combat Variables
+var firstCombatEngaged = false;
 var firstCombatWon = false;
 
 // Combat
@@ -44,6 +48,7 @@ var deaths = 1;
 // Incrementors
 var trainingInc = 1;
 var intelligenceInc = 1;
+var deathInc = 1;
 
 // Auto incrementors
 var intelligenceAutoInc = 0;
@@ -63,7 +68,7 @@ var hasAwardedIntelligenceIncCap = false;
 var hasAwardedTrainingIncCap = false;
 
 var shardBosses = [];
-shardBosses.push(["Strange Creature", 10, 5, 1, 1]);
+shardBosses.push(["Strange Creature", 10, 5, 1]);
 
 function lookAction() {
     if (!isAware) {
@@ -316,6 +321,8 @@ function runCombatRound() {
         mob.hp -= atk;
         if (mob.hp <= 0) {
             updateMainStory("The " + mob.name + " falls to the ground dead.");
+            combatRewards();
+            inCombat = false;
             return true;
         }
     }
@@ -329,6 +336,25 @@ function runCombatRound() {
     }
     return true;
 
+}
+
+function combatRewards() {
+    checkSpecialCombatRewards();
+}
+
+function checkSpecialCombatRewards() {
+    if (firstCombatEngaged) {
+        firstCombatWon = true;
+        updateMainStory("Upon striking down this Strange Creature all of your surroundings twist and distort, and your amulet pulses strongly");
+        pulseStrongly();
+        updateMainStory("The creatures eyes, red a moment ago flash to a warm light orange color.  Suddenly the light in the eyes shoots out of the creature and move unerringly towards the amulet on your chest. ");
+        updateMainStory("A voice sounds off in your head: 'At last!  We are united once again!'");
+        updateMainStory("Suddenly you know, this creature was the 'Spirit of Creativity' and its a part of you.  You remember waking up in another room similar to this and knowing that the 'Spirit of Last Resort' was in danger.");
+        updateMainStory("For some strange reason though none of the other spirits appear reachable via the subnet so you cannot request aid.  Determined to not let the spirit die you decided to set out and try to intercept whatever was heading towards it.");
+        updateMainStory("About halfway to the 'Node of Last Resort' you ran into a fellow spirit also on the way to the node, perhaps they also saw the problem and are heading to help too?");
+        updateMainStory("Encouraged, you call out and the spirit turns.  Only then do you see the crackling red eyes streaked with black bolts of energy.  The spirit moves, almost too fast too see, and suddenly everything goes black.");
+        clearCombatInfo();
+    }
 }
 
 function trackTime() {
@@ -354,42 +380,10 @@ function trackTime() {
     }
 
     // Post player driven actions, does something happen to them?
-
-    if (!firstTimeMessage && tick >= 10) {
-        updateMainStory('You hear soft pounding on the door, the creature has arrived');
-        firstTimeMessage = true;
-    } else if (!secondTimeMessage && tick >= 15) {
-        updateMainStory('The banging on the door has become very loud, the creature is almost inside');
-        secondTimeMessage = true;
-    } else if (!firstCombatWon && tick >=25) {
-        // Check stats/abilities either overcome creature and goto phase 2, or reset allowing level up.
-        if (!combatSkillsRevealed) {
-            if (intelligence < 100 && training < 100) {
-                updateMainStory('The creature bursts into the room, and finishes you off just like before.');
-            } else if (intelligence < 100) {
-                updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
-            } else if (training < 100) {
-                updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
-            }
-        }
-
-        // Succeed or die.
-        if ((training >= 100 && intelligence >= 100) || combatSkillsRevealed) {
-                mob = getMonster(...shardBosses[0]);
-                inCombat=true;
-                updateActionFeedback("Seeing no other way, you fight the creature.");
-                if (!combatSkillsRevealed) {
-                    updateMainStory("Basic attack skill unlocked!  This skill will be permanently unlocked for future loops so you can train with it before the creature arrives.");
-                    combatSkillsRevealed = true;
-                    $('#combatActions')[0].style.display="inline";
-                    $('#enemyStats')[0].style.display="block";
-                }
-                updateCombatInfo();
-        } else {
-                resetPhase1();
-        }
-    } else if (tick >= 50) {
-        updateMainStory("The world just ends, for now.");
+    checkFirstCombat();
+    if (tick >= 50) {
+        updateMainStory("Another spirit comes through the door of the room, eyes burning a fearsome red with ominous black streaks running through them.");
+        updateMainStory("Almost too fast to see, it strikes at you piercing your chest.  In horror you watch the blackness seep from its eyes at head towards you engulfing your body from within.");
         inCombat=false;
         resetPhase1();
     }
@@ -397,6 +391,46 @@ function trackTime() {
     // This is now centralized and will be called each tick
     tick++;
     decorateToolTips();
+}
+
+function checkFirstCombat() {
+    if (!firstCombatWon) {
+        if (!firstTimeMessage && tick >= 10) {
+            updateMainStory('You hear soft pounding on the door, the creature has arrived');
+            firstTimeMessage = true;
+        } else if (!secondTimeMessage && tick >= 15) {
+            updateMainStory('The banging on the door has become very loud, the creature is almost inside');
+            secondTimeMessage = true;
+        } else if (!firstCombatWon && tick >=25) {
+            // Check stats/abilities either overcome creature and goto phase 2, or reset allowing level up.
+            if (!combatSkillsRevealed) {
+                if (intelligence < 100 && training < 100) {
+                    updateMainStory('The creature bursts into the room, and finishes you off just like before.');
+                } else if (intelligence < 100) {
+                    updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
+                } else if (training < 100) {
+                    updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
+                }
+            }
+
+            // Succeed or die.
+            if ((training >= 100 && intelligence >= 100) || combatSkillsRevealed) {
+                    mob = getMonster(...shardBosses[0]);
+                    inCombat=true;
+                    updateActionFeedback("Seeing no other way, you fight the creature.");
+                    if (!combatSkillsRevealed) {
+                        updateMainStory("Basic attack skill unlocked!  This skill will be permanently unlocked for future loops so you can train with it before the creature arrives.");
+                        combatSkillsRevealed = true;
+                        $('#combatActions')[0].style.display="inline";
+                        $('#enemyStats')[0].style.display="block";
+                        firstCombatEngaged=true;
+                    }
+                    updateCombatInfo();
+            } else {
+                    resetPhase1();
+            }
+        }
+    }
 }
 
 function updateCombatInfo() {
@@ -434,6 +468,14 @@ function resetPhase1() {
 
     decorateToolTips();
     updateActionFeedback('You have died!  The item on your chest flashes a brilliant blue and you stream back to the start of your loop!');
+
+    if(firstCombatWon && !firstCombatUnlocksRevealed) {
+        updateMainStory('This time when you come to, something has changed.  One of the panels that lines the wall of your room has come alive.  Circular Pattern on it with 12 circles spread around the diameter, one of the circles, the one to the north is lit up and is colored a warm light orange. Additionally there is one larger circle in the middle colored a pleasing light blue.');
+        updateMainStory("You realize that there is also writing on the panel, and you can actually understand it.  The words say 'Subnet Status'");
+        updateMainStory("Oddly, you appear to also know what's going on in the other location, and it appears that it is currently letting you know that a threat is approaching your location, and will most likely arrive in 50 ticks.");
+        updateMainStory("Additionally you also seem to have access to new skills, which should in turn open up new ways to deal with incoming threats.");
+        firstCombatUnlocksRevealed = true;
+    }
 };
 
 function unlockDeathUpgrades() {
@@ -484,11 +526,12 @@ function updateMainStory(message) {
     $('#mainStory').scrollTop($('#mainStory')[0].scrollHeight);
 }
 
-function getMonster(name, hp, atk) {
+function getMonster(name, hp, atk, baseScrap) {
     return {
         name,
         hp,
-        atk
+        atk,
+        baseScrap
     }
 }
 
