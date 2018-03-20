@@ -16,6 +16,10 @@ var deathStatRevealed = false;
 var hpTrainButtonRevealed = false;
 var atkTrainButtonRevealed = false;
 var autoIncTrainingRevealed = false;
+var firstCombatWon = false;
+
+// Combat
+var inCombat = false;
 
 // time variables
 var firstTimeMessage = false;
@@ -67,7 +71,7 @@ function lookAction() {
         if (tutorial == 3) {
             document.getElementById('mainStats').style.display='block';
             document.getElementById('actionFeedback').style.display='block';
-            document.getElementById('train').style.display='block';
+            document.getElementById('train').style.display='inline';
             document.getElementById('look').innerHTML = 'Consider';
             updateMainStory('You are in a room with patterns on the walls.');
             $("#look").off("click");
@@ -176,6 +180,7 @@ function lookPhase1() {
 function decorateToolTips() {
     $('#intelligenceValue')[0].innerHTML = intelligence;
     $('#trainingValue')[0].innerHTML = training;
+    $('#tickValue')[0].innerHTML = tick;
     if (capsRevealed) {
         $('#intelligenceCap')[0].innerHTML=intelligenceCap;
         $('#trainingCap')[0].innerHTML=trainingCap;
@@ -263,13 +268,14 @@ function autoIncTraining() {
 }
 
 function trackTime() {
+
     if (!firstTimeMessage && tick >= 10) {
         updateMainStory('You hear soft pounding on the door, the creature has arrived');
         firstTimeMessage = true;
     } else if (!secondTimeMessage && tick >= 15) {
         updateMainStory('The banging on the door has become very loud, the creature is almost inside');
         secondTimeMessage = true;
-    } else if (tick >=25) {
+    } else if (!firstCombatWon && tick >=25) {
         // Check stats/abilities either overcome creature and goto phase 2, or reset allowing level up.
         if (intelligence < 100 && training < 100) {
             updateMainStory('The creature bursts into the room, and finishes you off just like before.');
@@ -277,9 +283,19 @@ function trackTime() {
             updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
         } else if (training < 100) {
             updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
-        } else {
-            updateMainStory("Imagine you are fighting in this really cool combat system right now.  Sadly I have not written it yet, so suck it, you die.");
         }
+
+        // Succeed or die.
+        if (training >= 100 && intelligence >= 100) {
+                mob = getMonster("Strange Creature", 10, 5);
+                inCombat=true;
+                updateMainStory("Imagine you are fighting in this really cool combat system right now.  Sadly I have not written it yet, so suck it, you die.");
+                firstCombatWon=true;
+        } else {
+                resetPhase1();
+        }
+    } else if (tick > 50) {
+        updateMainStory("The world just ends, for now.");
         resetPhase1();
     }
 
@@ -288,8 +304,8 @@ function trackTime() {
     autoIncIntellect();
 
     // This is now centralized and will be called each tick
-    decorateToolTips();
     tick++;
+    decorateToolTips();
 }
 
 function resetPhase1() {
@@ -306,14 +322,20 @@ function resetPhase1() {
     tick = 0;
 
     deaths++;
-    if (deaths >= 10) {
+    // Death based upgrades go here
+    unlockDeathUpgrades();
+
+    decorateToolTips();
+};
+
+function unlockDeathUpgrades() {
+    if (!deathStatRevealed && deaths >= 10) {
         updateMainStory('As you die you notice that the pulse coming from your chest is getting a bit stronger each time.  When you come back to you notice that some of the blue light that has come from it is absorbed back in, causing the glow to become slightly stronger over the cycles.  You are not sure what use this is for you, bit you think you can estimate how large the effect is from here onward.');
         $('#deathStat')[0].style.display="block";
         pulseStrongly();
         deathStatRevealed=true;
     }
-    decorateToolTips();
-};
+}
 
 function resetTickMessages() {
     firstTimeMessage = false;
@@ -351,6 +373,14 @@ function updateActionFeedback(message) {
 function updateMainStory(message) {
     document.getElementById('mainStory').value += '\n' + message;
     $('#mainStory').scrollTop($('#mainStory')[0].scrollHeight);
+}
+
+function getMonster(name, hp, atk) {
+    return {
+        name,
+        hp,
+        atk
+    }
 }
 
 $( document ).ready(function() {
