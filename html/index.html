@@ -34,6 +34,7 @@
         <span id="trainingAutoIncContainer" style="display:none"><span>Inc/Tick: </span><span id="trainingAutoInc">0</span>
         <button id="trainAutoTrainingInc">Train (10 Temporal)</button></span>
     </span>
+    <span id="amulet" class="pulse"></span>
     <span id="deathStat" class="statsBox" style="display:none">
         <span>Temporal Energy: </span><span id="deathValue">1</span>
         <span>Tick: </span><span id="tickValue">0</span>
@@ -52,6 +53,10 @@
 <div id="characterActions">
     <button id="look">Consider</button>
     <button id="train" style="display:none">Train</button>
+</div>
+<br>
+<div id="combatActions" style="display:none;">
+    <span class="statsBox"><button id="Attack">Attack</button> Cost: <span id="attackCost" class="statsBox">150 (Training)</span> Experience: <span id="attackExperience" class="statsBox">0/10</span></span>
 </div>
 <div id="footer">
     <span id="versionNumber" style="float: right; text: bold; text-align: right; width: 100%"></span>

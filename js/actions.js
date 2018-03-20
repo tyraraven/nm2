@@ -134,27 +134,28 @@ function lookPhase1() {
     if (!hasAwardedIntelligenceIncCap && intelligence >= 10 && intelligenceInc < 10) {
         intelligenceInc++;
         hasAwardedIntelligenceIncCap = true;
-        updateMainStory('Thinking about your situation more you realize that the item on your chest must be somehow relaying your intellect back in time each time you die.  You wonder if you can somehow exploit that.');
+        updateActionFeedback('Thinking about your situation more you realize that the item on your chest must be somehow relaying your intellect back in time each time you die.  You wonder if you can somehow exploit that. (+1 Int per Click)');
         pulseGently();
     } else if (intelligence >= 25 && !capsRevealed) {
         $('#intelligenceCapContainer')[0].style.display="inline";
         $('#trainingCapContainer')[0].style.display="inline";
         capsRevealed = true;
-        updateMainStory('You are starting to understand the limits of your present existence. (You can now see your ability caps by hovering over them in the statistics panel)');
         pulseStrongly();
+        updateMainStory('You are starting to understand the limits of your present existence. (You can now see your ability caps statistics panel)');
     } else if (intelligence >= 45 && !incRevealed) {
         incRevealed = true;
         console;
         $('#intelligenceIncContainer')[0].style.display="inline";
         $('#trainingIncContainer')[0].style.display="inline";
-        updateMainStory('You now know that you are growing faster as you loop through the cycle, and can gauge its rate of growth! (You can now see how fast your ability scores are going up per click in the tooltips)');
         pulseStrongly();
+        updateMainStory('You now know that you are growing faster as you loop through the cycle, and can gauge its rate of growth! (You can now see how fast your ability scores are going up per click in the tooltips)');
     } else if (intelligence >= 75 && !capRaiseRevealed) {
+        pulseStrongly();
         updateMainStory('There is a limit to your abilities, but is it a hard limit?  You think if you were to spend a large amount of effort when you are at your limit, you might be able to train yourself to further heights in the next cycle.');
         updateMainStory('(If you are at cap, and you press the training button again you will consume all of your currently banked attribute, but in exchange your cap will increase.)');
         capRaiseRevealed = true;
-        pulseStrongly();
     } else if (intelligence > 150 && deathStatRevealed && !autoIncTrainingRevealed) {
+        pulseStrongly();
         updateMainStory("Thinking about all of this temporal energy you are gaining you wonder if you could somehow take some of the time you are spending training each cycle into the next cycle.");
         updateMainStory("You think it should be possible, and almost on cue a panel lights up on the side of the room, glowing the same blue color that your chest does. ");
         updateMainStory("On the panel is an interface, with multiple buttons.  These buttons seem to correspond to activities you have been doing.");
@@ -163,7 +164,6 @@ function lookPhase1() {
         $('#trainingAutoIncContainer')[0].style.display="inline";
         $('#intelligenceAutoIncContainer').click(trainAutoIntInc);
         $('#trainingAutoIncContainer').click(trainAutoTrainingInc);
-        pulseStrongly();
     }
     else if (intelligence == intelligenceCap  && capRaiseRevealed) {
         Math.round(intelligenceCap = intelligenceCap * capFactor);
@@ -207,11 +207,7 @@ function trainPhase1() {
         if (!hasAwardedTrainingIncCap && training >= 10 && trainingInc < 10) {
             trainingInc++;
             hasAwardedTrainingIncCap = true;
-            if (trainingInc < 6) {
-                updateMainStory('You work on controlling your various limbs, trying to use it as effectively as the your own body.');
-            } else if (trainingInc < 10) {
-                updateMainStory('You are getting the hang of this new body, you almost no longer feel the difference.');
-            }
+            updateActionFeedback('You work on controlling your various limbs, trying to use it as effectively as the your own body. (+1 Training per click)');
             pulseGently();
         } else if (!combatRevealed && training > 50) {
             combatRevealed = true;
@@ -242,10 +238,21 @@ function trainPhase1() {
 
 function pulseGently() {
     updateMainStory('The item on your chest pulses gently once.');
+    $('#amulet')[0].style.animation = "pulse 2s";
+    setTimeout(function ()
+    {
+        $('#amulet')[0].style.animation = "";
+    }, 2000);
+
 }
 
 function pulseStrongly() {
     updateMainStory('The item on your chest pulses strongly, something significant has changed.');
+    $('#amulet')[0].style.animation = "pulse 5s";
+    setTimeout(function ()
+    {
+        $('#amulet')[0].style.animation = "";
+    }, 5000);
 }
 
 function incIntellect() {
@@ -289,7 +296,11 @@ function trackTime() {
         if (training >= 100 && intelligence >= 100) {
                 mob = getMonster("Strange Creature", 10, 5);
                 inCombat=true;
-                updateMainStory("Imagine you are fighting in this really cool combat system right now.  Sadly I have not written it yet, so suck it, you die.");
+                updateActionFeedback("Seeing no other way, you fight the creature.");
+                if (!firstCombatWon) {
+                    updateMainStory("Basic attack skill unlocked!  This skill will be permanently unlocked for future loops so you can train with it before the creature arrives.");
+                }
+                $('#combatActions')[0].style.display="inline";
                 firstCombatWon=true;
         } else {
                 resetPhase1();
@@ -315,10 +326,6 @@ function resetPhase1() {
 
     // Tick messages
     resetTickMessages();
-
-    $('#mainStory').animate({borderColor:'red'}, 400)
-      .delay(400)
-      .animate({borderColor:'black'}, 1000);
     tick = 0;
 
     deaths++;
@@ -326,6 +333,7 @@ function resetPhase1() {
     unlockDeathUpgrades();
 
     decorateToolTips();
+    updateActionFeedback('You have died!  The item on your chest flashes a brilliant blue and you stream back to the start of your loop!');
 };
 
 function unlockDeathUpgrades() {
