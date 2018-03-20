@@ -380,6 +380,7 @@ function trackTime() {
         }
     } else if (tick >= 50) {
         updateMainStory("The world just ends, for now.");
+        inCombat=false;
         resetPhase1();
     }
 
