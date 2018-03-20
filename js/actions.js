@@ -62,6 +62,9 @@ var intelligenceCap = 100;
 var hasAwardedIntelligenceIncCap = false;
 var hasAwardedTrainingIncCap = false;
 
+var shardBosses = [];
+shardBosses.push(["Strange Creature", 10, 5, 1, 1]);
+
 function lookAction() {
     if (!isAware) {
         if (awareness < phaseOneMessages.length) {
@@ -343,8 +346,10 @@ function trackTime() {
 
     // Are we in combat?
     if (inCombat) {
+        updateCombatInfo();
         if (!runCombatRound()) {
             resetPhase1();
+            clearCombatInfo();
         }
     }
 
@@ -370,14 +375,16 @@ function trackTime() {
 
         // Succeed or die.
         if ((training >= 100 && intelligence >= 100) || combatSkillsRevealed) {
-                mob = getMonster("Strange Creature", 10, 5);
+                mob = getMonster(...shardBosses[0]);
                 inCombat=true;
                 updateActionFeedback("Seeing no other way, you fight the creature.");
                 if (!combatSkillsRevealed) {
                     updateMainStory("Basic attack skill unlocked!  This skill will be permanently unlocked for future loops so you can train with it before the creature arrives.");
                     combatSkillsRevealed = true;
                     $('#combatActions')[0].style.display="inline";
+                    $('#enemyStats')[0].style.display="block";
                 }
+                updateCombatInfo();
         } else {
                 resetPhase1();
         }
@@ -390,6 +397,16 @@ function trackTime() {
     // This is now centralized and will be called each tick
     tick++;
     decorateToolTips();
+}
+
+function updateCombatInfo() {
+    $('#opponentName')[0].innerHTML = mob.name;
+    $('#combatStatus')[0].innerHTML = "Engaged";
+};
+
+function clearCombatInfo() {
+    $('#opponentName')[0].innerHTML = "No Opponent";
+    $('#combatStatus')[0].innerHTML = "Free";
 }
 
 function levelUpCombatSkills() {
