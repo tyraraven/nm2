@@ -5,8 +5,6 @@
 
 .pulse {
   float: right;
-  border-right: 10px;
-  border-top: 2 px;
   display: inline;
   width: 22px;
   height: 22px;

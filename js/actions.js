@@ -1,5 +1,5 @@
 // Version number
-var versionNumber = '0.31818';
+var versionNumber = '0.31819';
 
 // Awareness Intro Game Stat
 var isAware = true;
@@ -16,10 +16,16 @@ var deathStatRevealed = false;
 var hpTrainButtonRevealed = false;
 var atkTrainButtonRevealed = false;
 var autoIncTrainingRevealed = false;
+var combatSkillsRevealed = false;
 var firstCombatWon = false;
 
 // Combat
 var inCombat = false;
+
+// basic attack
+var basicAttackExp = 0;
+var basicAttackLevelUpCost = 10;
+var basicAttackCost = 150;
 
 // time variables
 var firstTimeMessage = false;
@@ -200,6 +206,10 @@ function decorateToolTips() {
         $('#intelligenceAutoInc')[0].innerHTML=intelligenceAutoInc;
         $('#trainingAutoInc')[0].innerHTML=trainingAutoInc;
     }
+    if (combatSkillsRevealed) {
+        $('#basicAttackCost')[0].innerHTML=basicAttackCost;
+        $('#basicAttackTNL')[0].innerHTML=basicAttackExp + '/' + basicAttackLevelUpCost;
+    }
 }
 
 function trainPhase1() {
@@ -274,6 +284,23 @@ function autoIncTraining() {
     }
 }
 
+function basicAttackClick() {
+    if (training > basicAttackCost) {
+        if (inCombat) {
+            updateActionFeedback("You swing and hit the enemy with a weak attack.");
+        } else {
+            updateActionFeedback("You practice your cool attack moves.");
+        }
+        training -=basicAttackCost;
+        basicAttackExp++;
+        trackTime();
+    } else {
+        alert('You must have at least ' + basicAttackCost + ' training to attack');
+        return false;
+    }
+
+}
+
 function trackTime() {
 
     if (!firstTimeMessage && tick >= 10) {
@@ -301,6 +328,7 @@ function trackTime() {
                     updateMainStory("Basic attack skill unlocked!  This skill will be permanently unlocked for future loops so you can train with it before the creature arrives.");
                 }
                 $('#combatActions')[0].style.display="inline";
+                combatSkillsRevealed = true;
                 firstCombatWon=true;
         } else {
                 resetPhase1();
@@ -314,9 +342,22 @@ function trackTime() {
     autoIncTraining();
     autoIncIntellect();
 
+    // Level Up Combat Skills
+    levelUpCombatSkills();
+
     // This is now centralized and will be called each tick
     tick++;
     decorateToolTips();
+}
+
+function levelUpCombatSkills() {
+    if (basicAttackExp >= basicAttackLevelUpCost) {
+        pulseGently();
+        updateMainStory("You have become more efficient at attacking! (Action Cost Decrease/Level Up Increase)");
+        Math.round(basicAttackLevelUpCost *= 1.5);
+        basicAttackExp = 0;
+        Math.round(basicAttackCost *= .9);
+    }
 }
 
 function resetPhase1() {
@@ -394,4 +435,5 @@ function getMonster(name, hp, atk) {
 $( document ).ready(function() {
     $('#look').click(lookAction);
     $('#versionNumber')[0].innerHTML = 'Version: ' + versionNumber;
+    $('#basicAttack').click(basicAttackClick);
 });
