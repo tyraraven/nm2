@@ -21,6 +21,8 @@ var firstCombatWon = false;
 
 // Combat
 var inCombat = false;
+var mob;
+var didAttack = false;
 
 // basic attack
 var basicAttackExp = 0;
@@ -137,6 +139,11 @@ function trainHp() {
 
 function lookPhase1() {
     incIntellect();
+    updateActionFeedback('You carefully consider the situation you are in.');
+    trackTime();
+}
+
+function checkIntelligenceUnlocks () {
     if (!hasAwardedIntelligenceIncCap && intelligence >= 10 && intelligenceInc < 10) {
         intelligenceInc++;
         hasAwardedIntelligenceIncCap = true;
@@ -171,16 +178,12 @@ function lookPhase1() {
         $('#intelligenceAutoIncContainer').click(trainAutoIntInc);
         $('#trainingAutoIncContainer').click(trainAutoTrainingInc);
     }
-    else if (intelligence == intelligenceCap  && capRaiseRevealed) {
-        Math.round(intelligenceCap = intelligenceCap * capFactor);
+    else if (intelligence >= intelligenceCap  && capRaiseRevealed) {
+        intelligenceCap = Math.round(intelligenceCap = intelligenceCap * capFactor);
         intelligence = 0;
         updateMainStory("Suddenly you feel a pulse and all of the knowledge you had gained thus far drains out of you, but you feel like you have more potential.");
         pulseGently();
     }
-    else {
-        updateActionFeedback('You carefully consider the situation you are in.');
-    }
-    trackTime();
 }
 
 function decorateToolTips() {
@@ -214,6 +217,11 @@ function decorateToolTips() {
 
 function trainPhase1() {
     incTraining();
+    updateActionFeedback('You attempt to figure out how to move around in this body more effectively');
+    trackTime();
+}
+
+function checkTrainingUnlocks () {
         if (!hasAwardedTrainingIncCap && training >= 10 && trainingInc < 10) {
             trainingInc++;
             hasAwardedTrainingIncCap = true;
@@ -232,18 +240,12 @@ function trainPhase1() {
             $('#trainAtk')[0].style.display="inline";
             $('#trainAtk').click(trainAtk);
             atkTrainButtonRevealed = true;
-        } else if (training == trainingCap && capRaiseRevealed) {
-            Math.round(trainingCap = trainingCap * capFactor);
+        } else if (training >= trainingCap && capRaiseRevealed) {
+            trainingCap = Math.round(trainingCap = trainingCap * capFactor);
             training = 0;
             updateMainStory("Suddenly you feel a pulse and all of the coordination you had gained thus far drains out of you, but you feel like you have more potential.");
             pulseGently();
         }
-        else {
-            updateActionFeedback('You attempt to figure out how to move around in this body more effectively');
-        }
-
-     // Finally track the tick
-     trackTime();
 }
 
 function pulseGently() {
@@ -276,21 +278,26 @@ function autoIncIntellect() {
     if (intelligenceAutoInc > 0) {
         intelligence += intelligenceAutoInc;
     }
+    if (intelligence > intelligenceCap) {
+        intelligence = intelligenceCap;
+    }
 }
 
 function autoIncTraining() {
     if (trainingAutoInc > 0) {
         training += trainingAutoInc;
     }
+    if (training > trainingCap) {
+        training = trainingCap;
+    }
 }
 
 function basicAttackClick() {
     if (training > basicAttackCost) {
-        if (inCombat) {
-            updateActionFeedback("You swing and hit the enemy with a weak attack.");
-        } else {
+        if (!inCombat) {
             updateActionFeedback("You practice your cool attack moves.");
         }
+
         training -=basicAttackCost;
         basicAttackExp++;
         trackTime();
@@ -298,10 +305,49 @@ function basicAttackClick() {
         alert('You must have at least ' + basicAttackCost + ' training to attack');
         return false;
     }
+}
+
+function runCombatRound() {
+    if (didAttack) {
+        updateMainStory("You swing at the " + mob.name + " hitting it with a weak attack for " + atk + " damage.");
+        mob.hp -= atk;
+        if (mob.hp <= 0) {
+            updateMainStory("The " + mob.name + " falls to the ground dead.");
+            return true;
+        }
+    }
+    didAttack = false;
+    updateMainStory("The " + mob.name + " swings at you dealing " + mob.atk + " damage!");
+    hp -= mob.atk;
+    if (hp <= 0) {
+        updateMainStory("You have been slain by " + mob.name);
+        inCombat = false;
+        return false;
+    }
 
 }
 
 function trackTime() {
+
+    // FIre the auto inc's
+    autoIncTraining();
+    autoIncIntellect();
+
+    // Check for stat unlocks!
+    checkIntelligenceUnlocks()
+    checkTrainingUnlocks();
+
+    // Level Up Combat Skills
+    levelUpCombatSkills();
+
+    // Are we in combat?
+    if (inCombat) {
+        if (!runCombatRound()) {
+            resetPhase1();
+        }
+    }
+
+    // Post player driven actions, does something happen to them?
 
     if (!firstTimeMessage && tick >= 10) {
         updateMainStory('You hear soft pounding on the door, the creature has arrived');
@@ -324,26 +370,18 @@ function trackTime() {
                 mob = getMonster("Strange Creature", 10, 5);
                 inCombat=true;
                 updateActionFeedback("Seeing no other way, you fight the creature.");
-                if (!firstCombatWon) {
+                if (!combatSkillsRevealed) {
                     updateMainStory("Basic attack skill unlocked!  This skill will be permanently unlocked for future loops so you can train with it before the creature arrives.");
+                    combatSkillsRevealed = true;
+                    $('#combatActions')[0].style.display="inline";
                 }
-                $('#combatActions')[0].style.display="inline";
-                combatSkillsRevealed = true;
-                firstCombatWon=true;
         } else {
                 resetPhase1();
         }
-    } else if (tick > 50) {
+    } else if (tick >= 50) {
         updateMainStory("The world just ends, for now.");
         resetPhase1();
     }
-
-    // FIre the auto inc's
-    autoIncTraining();
-    autoIncIntellect();
-
-    // Level Up Combat Skills
-    levelUpCombatSkills();
 
     // This is now centralized and will be called each tick
     tick++;
@@ -354,9 +392,9 @@ function levelUpCombatSkills() {
     if (basicAttackExp >= basicAttackLevelUpCost) {
         pulseGently();
         updateMainStory("You have become more efficient at attacking! (Action Cost Decrease/Level Up Increase)");
-        Math.round(basicAttackLevelUpCost *= 1.5);
+        basicAttackLevelUpCost = Math.round(basicAttackLevelUpCost *= 1.5);
         basicAttackExp = 0;
-        Math.round(basicAttackCost *= .9);
+        basicAttackCost = Math.round(basicAttackCost *= .9);
     }
 }
 
@@ -395,6 +433,7 @@ function resetAbilityScores() {
     intelligence = 0;
     updateIntelligence(intelligence);
     training = 0;
+    hp=totalHp;
     hasAwardedTrainingIncCap = false;
     hasAwardedIntelligenceIncCap = false;
     updateTraining(training);
