@@ -297,7 +297,7 @@ function basicAttackClick() {
         if (!inCombat) {
             updateActionFeedback("You practice your cool attack moves.");
         }
-
+        didAttack=true;
         training -=basicAttackCost;
         basicAttackExp++;
         trackTime();
@@ -324,6 +324,7 @@ function runCombatRound() {
         inCombat = false;
         return false;
     }
+    return true;
 
 }
 
@@ -357,16 +358,18 @@ function trackTime() {
         secondTimeMessage = true;
     } else if (!firstCombatWon && tick >=25) {
         // Check stats/abilities either overcome creature and goto phase 2, or reset allowing level up.
-        if (intelligence < 100 && training < 100) {
-            updateMainStory('The creature bursts into the room, and finishes you off just like before.');
-        } else if (intelligence < 100) {
-            updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
-        } else if (training < 100) {
-            updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
+        if (!combatSkillsRevealed) {
+            if (intelligence < 100 && training < 100) {
+                updateMainStory('The creature bursts into the room, and finishes you off just like before.');
+            } else if (intelligence < 100) {
+                updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
+            } else if (training < 100) {
+                updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
+            }
         }
 
         // Succeed or die.
-        if (training >= 100 && intelligence >= 100) {
+        if ((training >= 100 && intelligence >= 100) || combatSkillsRevealed) {
                 mob = getMonster("Strange Creature", 10, 5);
                 inCombat=true;
                 updateActionFeedback("Seeing no other way, you fight the creature.");
