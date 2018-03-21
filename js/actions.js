@@ -71,17 +71,17 @@ var shardBosses = [];
 shardBosses.push(["Strange Creature", 10, 5, 1, 0]);
 
 // Random Encounters Phase1
-var randomEncounters = [];
-shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
-shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
-shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
-shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
-shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
-shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
-shardBosses.push(["Small Scavenger", 6, 6, 0, 1]);
-shardBosses.push(["Small Scavenger", 6, 6, 0, 1]);
-shardBosses.push(["Small Scavenger", 6, 6, 0, 1]);
-shardBosses.push(["Hunting Humanoid", 26, 12, 3, 1]);
+var randomEncountersArray = [];
+randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
+randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
+randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
+randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
+randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
+randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
+randomEncountersArray.push(["Small Scavenger", 6, 6, 0, 1]);
+randomEncountersArray.push(["Small Scavenger", 6, 6, 0, 1]);
+randomEncountersArray.push(["Small Scavenger", 6, 6, 0, 1]);
+randomEncountersArray.push(["Hunting Humanoid", 26, 12, 3, 1]);
 
 
 
@@ -406,6 +406,8 @@ function trackTime() {
             resetPhase1();
             clearCombatInfo();
         }
+    } else if (gs.firstCombatWon) {
+        randomEncounters();
     }
 
     // Post player driven actions, does something happen to them?
@@ -420,6 +422,16 @@ function trackTime() {
     // This is now centralized and will be called each tick
     gs.tick++;
     decorateToolTips();
+}
+
+function randomEncounters() {
+    if (Math.floor((Math.random() * 100) + 1) <= 25) {
+        mob = getMonster(...randomEncountersArray[Math.floor((Math.random() * randomEncountersArray.length))]);
+        updateCombatInfo();
+        gs.inCombat = true;
+        return true;
+    }
+    return false;
 }
 
 function checkFirstCombat() {
@@ -575,7 +587,7 @@ function updateMainStory(message) {
     $('#mainStory').scrollTop($('#mainStory')[0].scrollHeight);
 }
 
-function getMonster(name, hp, atk, baseScrap) {
+function getMonster(name, hp, atk, baseScrap, baseNecroEnergy) {
     return {
         name,
         hp,
