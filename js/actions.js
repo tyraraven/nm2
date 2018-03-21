@@ -165,7 +165,8 @@ function trainHp() {
 }
 
 function lookPhase1() {
-    incIntellect();
+    //incIntellect();
+    incStat('intelligence');
     updateActionFeedback('You carefully consider the situation you are in.');
     trackTime();
 }
@@ -325,6 +326,13 @@ function incIntellect() {
     }
 }
 
+function incStat(stat) {
+    gs[stat] += (gs[stat+'Inc'] * gs[stat+'Mult']);
+    if (gs[stat] > gs[stat+'Cap']) {
+        gs[stat] = gs[stat+'Cap'];
+    }
+}
+
 function autoIncIntellect() {
     if (gs.intelligenceAutoInc > 0) {
         gs.intelligence += gs.intelligenceAutoInc;
@@ -428,6 +436,7 @@ function randomEncounters() {
     if (Math.floor((Math.random() * 100) + 1) <= 25) {
         mob = getMonster(...randomEncountersArray[Math.floor((Math.random() * randomEncountersArray.length))]);
         updateCombatInfo();
+        runCombatIntro();
         gs.inCombat = true;
         return true;
     }
@@ -455,8 +464,9 @@ function checkFirstCombat() {
             }
 
             // Succeed or die.
-            if ((gs.training >= 100 && gs.intelligence >= 100) || gs.combatSkillsRevealed) {
+            if (( gs.training >= 100 && gs.intelligence >= 100) || (gs.combatSkillsRevealed && !gs.inCombat)) {
                     mob = getMonster(...shardBosses[0]);
+                    runCombatIntro();
                     gs.inCombat=true;
                     updateActionFeedback("Seeing no other way, you fight the creature.");
                     if (!gs.combatSkillsRevealed) {
@@ -508,8 +518,11 @@ function revealCombatSkills() {
 function updateCombatInfo() {
     $('#opponentName')[0].innerHTML = mob.name;
     $('#combatStatus')[0].innerHTML = "Engaged";
-    updateMainStory("A " + mob.name + " comes crashing through the door!");
 };
+
+function runCombatIntro() {
+    updateMainStory("A " + mob.name + " comes crashing through the door!");
+}
 
 function clearCombatInfo() {
     $('#opponentName')[0].innerHTML = "No Opponent";
@@ -650,7 +663,7 @@ function processUnlocks() {
     if (gs.hpTrainButtonRevealed) {
         revealHpTrainButton();
     }
-    if (gs.revealAtkTrainButton) {
+    if (gs.atkTrainButtonRevealed) {
         revealAtkTrainButton();
     }
     if (gs.autoIncTrainingRevealed) {
