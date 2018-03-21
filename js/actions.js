@@ -6,30 +6,10 @@ var isAware = true;
 var awareness = 0;
 var tutorial = 0;
 
-// Feature Unlocks
-var hpTrainButtonRevealed = false;
-var atkTrainButtonRevealed = false;
-var autoIncTrainingRevealed = false;
-var combatSkillsRevealed = false;
+// In progress, will add to state when ready
 var firstCombatUnlocksRevealed = false;
 
-// Special Combat Variables
-var firstCombatEngaged = false;
-var firstCombatWon = false;
-
-// Combat
-var inCombat = false;
 var mob;
-var didAttack = false;
-
-// basic attack
-var basicAttackExp = 0;
-var basicAttackLevelUpCost = 10;
-var basicAttackCost = 150;
-
-// time variables
-var firstTimeMessage = false;
-var secondTimeMessage = false;
 
 var player = {
     hp: 1,
@@ -56,12 +36,25 @@ var gs = {
     trainingMult: 1,
     intelligenceMult: 1,
     tick: 0,
-    deathStatRevealed: false
+    deathStatRevealed: false,
+    hpTrainButtonRevealed: false,
+    atkTrainButtonRevealed: false,
+    autoIncTrainingRevealed: false,
+    combatSkillsRevealed: false,
+    firstCombatEngaged: false,
+    firstCombatWon: false,
+    hasAwardedIntelligenceIncCap: false,
+    hasAwardedTrainingIncCap: false,
+    firstTimeMessage: false,
+    secondTimeMessage: false,
+    inCombat: false,
+    didAttack: false,
+    basicAttackExp: 0,
+    basicAttackLevelUpCost: 10,
+    basicAttackCost: 150
 };
 
-// Per pass bonus checks
-var hasAwardedIntelligenceIncCap = false;
-var hasAwardedTrainingIncCap = false;
+
 
 var shardBosses = [];
 shardBosses.push(["Strange Creature", 10, 5, 1]);
@@ -162,9 +155,9 @@ function revealInc() {
 }
 
 function checkIntelligenceUnlocks () {
-    if (!hasAwardedIntelligenceIncCap && gs.intelligence >= 10 && gs.intelligenceInc < 10) {
+    if (!gs.hasAwardedIntelligenceIncCap && gs.intelligence >= 10 && gs.intelligenceInc < 10) {
         gs.intelligenceInc++;
-        hasAwardedIntelligenceIncCap = true;
+        gs.hasAwardedIntelligenceIncCap = true;
         updateActionFeedback('Thinking about your situation more you realize that the item on your chest must be somehow relaying your intellect back in time each time you die.  You wonder if you can somehow exploit that. (+1 Int per Click)');
         pulseGently();
     } else if (gs.intelligence >= 25 && !gs.capsRevealed) {
@@ -183,16 +176,13 @@ function checkIntelligenceUnlocks () {
         updateMainStory('There is a limit to your abilities, but is it a hard limit?  You think if you were to spend a large amount of effort when you are at your limit, you might be able to train yourself to further heights in the next cycle.');
         updateMainStory('(If you are at cap, and you press the training button again you will consume all of your currently banked attribute, but in exchange your cap will increase.)');
         gs.capRaiseRevealed = true;
-    } else if (gs.intelligence > 150 && gs.deathStatRevealed && !autoIncTrainingRevealed) {
+    } else if (gs.intelligence > 150 && gs.deathStatRevealed && !gs.autoIncTrainingRevealed) {
         pulseStrongly();
         updateMainStory("Thinking about all of this temporal energy you are gaining you wonder if you could somehow take some of the time you are spending training each cycle into the next cycle.");
         updateMainStory("You think it should be possible, and almost on cue a panel lights up on the side of the room, glowing the same blue color that your chest does. ");
         updateMainStory("On the panel is an interface, with multiple buttons.  These buttons seem to correspond to activities you have been doing.");
-        autoIncTrainingRevealed=true;
-        $('#intelligenceAutoIncContainer')[0].style.display="inline";
-        $('#trainingAutoIncContainer')[0].style.display="inline";
-        $('#intelligenceAutoIncContainer').click(trainAutoIntInc);
-        $('#trainingAutoIncContainer').click(trainAutoTrainingInc);
+        gs.autoIncTrainingRevealed=true;
+        revealAutoIncTraining();
     }
     else if (gs.intelligence >= gs.intelligenceCap  && gs.capRaiseRevealed) {
         gs.intelligenceCap = Math.round(gs.intelligenceCap = gs.intelligenceCap * gs.capFactor);
@@ -200,6 +190,13 @@ function checkIntelligenceUnlocks () {
         updateMainStory("Suddenly you feel a pulse and all of the knowledge you had gained thus far drains out of you, but you feel like you have more potential.");
         pulseGently();
     }
+}
+
+function revealAutoIncTraining() {
+    $('#intelligenceAutoIncContainer')[0].style.display="inline";
+    $('#trainingAutoIncContainer')[0].style.display="inline";
+    $('#intelligenceAutoIncContainer').click(trainAutoIntInc);
+    $('#trainingAutoIncContainer').click(trainAutoTrainingInc);
 }
 
 function decorateToolTips() {
@@ -221,13 +218,13 @@ function decorateToolTips() {
     if (gs.deathStatRevealed) {
         $('#deathValue')[0].innerHTML=gs.deaths;
     }
-    if (autoIncTrainingRevealed) {
+    if (gs.autoIncTrainingRevealed) {
         $('#intelligenceAutoInc')[0].innerHTML=gs.intelligenceAutoInc;
         $('#trainingAutoInc')[0].innerHTML=gs.trainingAutoInc;
     }
-    if (combatSkillsRevealed) {
-        $('#basicAttackCost')[0].innerHTML=basicAttackCost;
-        $('#basicAttackTNL')[0].innerHTML=basicAttackExp + '/' + basicAttackLevelUpCost;
+    if (gs.combatSkillsRevealed) {
+        $('#basicAttackCost')[0].innerHTML=gs.basicAttackCost;
+        $('#basicAttackTNL')[0].innerHTML=gs.basicAttackExp + '/' + gs.basicAttackLevelUpCost;
     }
 }
 
@@ -242,9 +239,9 @@ function revealCombat() {
 }
 
 function checkTrainingUnlocks () {
-        if (!hasAwardedTrainingIncCap && gs.training >= 10 && gs.trainingInc < 10) {
+        if (!gs.hasAwardedTrainingIncCap && gs.training >= 10 && gs.trainingInc < 10) {
             gs.trainingInc++;
-            hasAwardedTrainingIncCap = true;
+            gs.hasAwardedTrainingIncCap = true;
             updateActionFeedback('You work on controlling your various limbs, trying to use it as effectively as the your own body. (+1 Training per click)');
             pulseGently();
         } else if (!gs.combatRevealed && gs.training > 50) {
@@ -252,20 +249,28 @@ function checkTrainingUnlocks () {
             revealCombat();
             updateMainStory('The more you move around the more sure that you become: You are going to have to fight this creature.  Its time to start thinking about how that will work.');
             pulseStrongly();
-        } else if (!hpTrainButtonRevealed && gs.training > 85) {
-            $('#trainHp')[0].style.display="inline";
-            $('#trainHp').click(trainHp);
-            hpTrainButtonRevealed = true;
-        } else if (!atkTrainButtonRevealed && gs.training > 125) {
-            $('#trainAtk')[0].style.display="inline";
-            $('#trainAtk').click(trainAtk);
-            atkTrainButtonRevealed = true;
+        } else if (!gs.hpTrainButtonRevealed && gs.training > 85) {
+            revealHpTrainButton();
+            gs.hpTrainButtonRevealed = true;
+        } else if (!gs.atkTrainButtonRevealed && gs.training > 125) {
+            revealAtkTrainButton();
+            gs.atkTrainButtonRevealed = true;
         } else if (gs.training >= gs.trainingCap && gs.capRaiseRevealed) {
             gs.trainingCap = Math.round(trainingCap = gs.trainingCap * gs.capFactor);
             gs.training = 0;
             updateMainStory("Suddenly you feel a pulse and all of the coordination you had gained thus far drains out of you, but you feel like you have more potential.");
             pulseGently();
         }
+}
+
+function revealHpTrainButton() {
+    $('#trainHp')[0].style.display="inline";
+    $('#trainHp').click(trainHp);
+}
+
+function revealAtkTrainButton() {
+    $('#trainAtk')[0].style.display="inline";
+    $('#trainAtk').click(trainAtk);
 }
 
 function pulseGently() {
@@ -313,37 +318,37 @@ function autoIncTraining() {
 }
 
 function basicAttackClick() {
-    if (gs.training > basicAttackCost) {
-        if (!inCombat) {
+    if (gs.training > gs.basicAttackCost) {
+        if (!gs.inCombat) {
             updateActionFeedback("You practice your cool attack moves.");
         }
-        didAttack=true;
-        gs.training -=basicAttackCost;
-        basicAttackExp++;
+        gs.didAttack=true;
+        gs.training -=gs.basicAttackCost;
+        gs.basicAttackExp++;
         trackTime();
     } else {
-        alert('You must have at least ' + basicAttackCost + ' training to attack');
+        alert('You must have at least ' + gs.basicAttackCost + ' training to attack');
         return false;
     }
 }
 
 function runCombatRound() {
-    if (didAttack) {
+    if (gs.didAttack) {
         updateMainStory("You swing at the " + mob.name + " hitting it with a weak attack for " + player.atk + " damage.");
         mob.hp -= player.atk;
         if (mob.hp <= 0) {
             updateMainStory("The " + mob.name + " falls to the ground dead.");
             combatRewards();
-            inCombat = false;
+            gs.inCombat = false;
             return true;
         }
     }
-    didAttack = false;
+    gs.didAttack = false;
     updateMainStory("The " + mob.name + " swings at you dealing " + mob.atk + " damage!");
     player.hp -= mob.atk;
     if (player.hp <= 0) {
         updateMainStory("You have been slain by " + mob.name);
-        inCombat = false;
+        gs.inCombat = false;
         return false;
     }
     return true;
@@ -355,8 +360,8 @@ function combatRewards() {
 }
 
 function checkSpecialCombatRewards() {
-    if (firstCombatEngaged) {
-        firstCombatWon = true;
+    if (gs.firstCombatEngaged) {
+        gs.firstCombatWon = true;
         updateMainStory("Upon striking down this Strange Creature all of your surroundings twist and distort, and your amulet pulses strongly");
         pulseStrongly();
         updateMainStory("The creatures eyes, red a moment ago flash to a warm light orange color.  Suddenly the light in the eyes shoots out of the creature and move unerringly towards the amulet on your chest. ");
@@ -383,7 +388,7 @@ function trackTime() {
     levelUpCombatSkills();
 
     // Are we in combat?
-    if (inCombat) {
+    if (gs.inCombat) {
         updateCombatInfo();
         if (!runCombatRound()) {
             resetPhase1();
@@ -396,7 +401,7 @@ function trackTime() {
     if (gs.tick >= 50) {
         updateMainStory("Another spirit comes through the door of the room, eyes burning a fearsome red with ominous black streaks running through them.");
         updateMainStory("Almost too fast to see, it strikes at you piercing your chest.  In horror you watch the blackness seep from its eyes at head towards you engulfing your body from within.");
-        inCombat=false;
+        gs.inCombat=false;
         resetPhase1();
     }
 
@@ -406,16 +411,16 @@ function trackTime() {
 }
 
 function checkFirstCombat() {
-    if (!firstCombatWon) {
-        if (!firstTimeMessage && gs.tick >= 10) {
+    if (!gs.firstCombatWon) {
+        if (!gs.firstTimeMessage && gs.tick >= 10) {
             updateMainStory('You hear soft pounding on the door, the creature has arrived');
-            firstTimeMessage = true;
-        } else if (!secondTimeMessage && gs.tick >= 15) {
+            gs.firstTimeMessage = true;
+        } else if (!gs.secondTimeMessage && gs.tick >= 15) {
             updateMainStory('The banging on the door has become very loud, the creature is almost inside');
-            secondTimeMessage = true;
-        } else if (!firstCombatWon && gs.tick >=25) {
+            gs.secondTimeMessage = true;
+        } else if (!gs.firstCombatWon && gs.tick >=25) {
             // Check stats/abilities either overcome creature and goto phase 2, or reset allowing level up.
-            if (!combatSkillsRevealed) {
+            if (!gs.combatSkillsRevealed) {
                 if (gs.intelligence < 100 && gs.training < 100) {
                     updateMainStory('The creature bursts into the room, and finishes you off just like before.');
                 } else if (gs.intelligence < 100) {
@@ -426,16 +431,15 @@ function checkFirstCombat() {
             }
 
             // Succeed or die.
-            if ((gs.training >= 100 && gs.intelligence >= 100) || combatSkillsRevealed) {
+            if ((gs.training >= 100 && gs.intelligence >= 100) || gs.combatSkillsRevealed) {
                     mob = getMonster(...shardBosses[0]);
-                    inCombat=true;
+                    gs.inCombat=true;
                     updateActionFeedback("Seeing no other way, you fight the creature.");
-                    if (!combatSkillsRevealed) {
+                    if (!gs.combatSkillsRevealed) {
                         updateMainStory("Basic attack skill unlocked!  This skill will be permanently unlocked for future loops so you can train with it before the creature arrives.");
-                        combatSkillsRevealed = true;
-                        $('#combatActions')[0].style.display="inline";
-                        $('#enemyStats')[0].style.display="block";
-                        firstCombatEngaged=true;
+                        gs.combatSkillsRevealed = true;
+                        gs.firstCombatEngaged=true;
+                        revealCombatSkills();
                     }
                     updateCombatInfo();
             } else {
@@ -443,6 +447,11 @@ function checkFirstCombat() {
             }
         }
     }
+}
+
+function revealCombatSkills() {
+    $('#combatActions')[0].style.display="inline";
+    $('#enemyStats')[0].style.display="block";
 }
 
 function updateCombatInfo() {
@@ -456,12 +465,12 @@ function clearCombatInfo() {
 }
 
 function levelUpCombatSkills() {
-    if (basicAttackExp >= basicAttackLevelUpCost) {
+    if (gs.basicAttackExp >= gs.basicAttackLevelUpCost) {
         pulseGently();
         updateMainStory("You have become more efficient at attacking! (Action Cost Decrease/Level Up Increase)");
-        basicAttackLevelUpCost = Math.round(basicAttackLevelUpCost *= 1.5);
-        basicAttackExp = 0;
-        basicAttackCost = Math.round(basicAttackCost *= .9);
+        gs.basicAttackLevelUpCost = Math.round(gs.basicAttackLevelUpCost *= 1.5);
+        gs.basicAttackExp = 0;
+        gs.basicAttackCost = Math.round(gs.basicAttackCost *= .9);
     }
 }
 
@@ -481,7 +490,7 @@ function resetPhase1() {
     decorateToolTips();
     updateActionFeedback('You have died!  The item on your chest flashes a brilliant blue and you stream back to the start of your loop!');
 
-    if(firstCombatWon && !firstCombatUnlocksRevealed) {
+    if(gs.firstCombatWon && !firstCombatUnlocksRevealed) {
         updateMainStory('This time when you come to, something has changed.  One of the panels that lines the wall of your room has come alive.  Circular Pattern on it with 12 circles spread around the diameter, one of the circles, the one to the north is lit up and is colored a warm light orange. Additionally there is one larger circle in the middle colored a pleasing light blue.');
         updateMainStory("You realize that there is also writing on the panel, and you can actually understand it.  The words say 'Subnet Status'");
         updateMainStory("Oddly, you appear to also know what's going on in the other location, and it appears that it is currently letting you know that a threat is approaching your location, and will most likely arrive in 50 ticks.");
@@ -499,12 +508,13 @@ function unlockDeathUpgrades() {
         updateMainStory('As you die you notice that the pulse coming from your chest is getting a bit stronger each time.  When you come back to you notice that some of the blue light that has come from it is absorbed back in, causing the glow to become slightly stronger over the cycles.  You are not sure what use this is for you, bit you think you can estimate how large the effect is from here onward.');
         pulseStrongly();
         gs.deathStatRevealed=true;
+        revealDeathStat();
     }
 }
 
 function resetTickMessages() {
-    firstTimeMessage = false;
-    secondTimeMessage = false;
+    gs.firstTimeMessage = false;
+    gs.secondTimeMessage = false;
 }
 
 function resetAbilityScores() {
@@ -512,8 +522,8 @@ function resetAbilityScores() {
     updateIntelligence();
     gs.training = 0;
     player.hp=player.totalHp;
-    hasAwardedTrainingIncCap = false;
-    hasAwardedIntelligenceIncCap = false;
+    gs.hasAwardedTrainingIncCap = false;
+    gs.hasAwardedIntelligenceIncCap = false;
     updateTraining(gs.training);
 }
 
@@ -553,20 +563,28 @@ function getMonster(name, hp, atk, baseScrap) {
 function save() {
     store.set("player", player)
     store.set("gameState", gs);
+    store.set("mob", mob);
     return true;
 }
 
 function load() {
-    player = store.get("player");
-    // Take care of strange
+    let tempPlay = store.get("player");
+    if (tempPlay != null) { Object.assign(player, tempPlay) } else { return false }
+
     let saveState = store.get("gameState");
-    if (saveState != null) {
-        Object.assign(gs, store.get("gameState"));
-    } else { return false }
+    if (saveState != null) { Object.assign(gs, saveState) } else { return false }
+
+    mob = store.get("mob")
     finishTutorial();
     processUnlocks();
     decorateToolTips();
     return true;
+}
+
+function hardReset() {
+    if (confirm("Are you sure, this will completely erase your save and you will need to start over!")) {
+        store.clearAll()
+    };
 }
 
 function processUnlocks() {
@@ -582,11 +600,29 @@ function processUnlocks() {
     if (gs.deathStatRevealed) {
         revealDeathStat();
     }
+    if (gs.hpTrainButtonRevealed) {
+        revealHpTrainButton();
+    }
+    if (gs.revealAtkTrainButton) {
+        revealAtkTrainButton();
+    }
+    if (gs.autoIncTrainingRevealed) {
+        revealAutoIncTraining();
+    }
+    if (gs.combatSkillsRevealed) {
+        revealCombatSkills();
+    }
+    if (gs.inCombat) {
+        updateCombatInfo();
+    }
 }
 
 $( document ).ready(function() {
     $('#look').click(lookAction);
     $('#versionNumber')[0].innerHTML = 'Version: ' + versionNumber;
     $('#basicAttack').click(basicAttackClick);
-    if (confirm("Load your saved game?")) {load()}
+    $('#saveGame').click(save);
+    $('#loadGame').click(load);
+    $('#hardReset').click(hardReset);
+    if (store.get("gameState") != null && confirm("Load your saved game?")) {load()}
 });
