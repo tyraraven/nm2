@@ -1,5 +1,5 @@
 // Version number
-var versionNumber = '0.31819';
+var versionNumber = '0.31820';
 
 // Awareness Intro Game Stat
 var isAware = true;
@@ -18,29 +18,40 @@ var player = {
 };
 
 var gs = {
-    training: 0,
+    // revealStates
     capsRevealed: false,
     incRevealed: false,
     capRaiseRevealed: false,
     combatRevealed: false,
-    intelligence: 0,
-    deaths: 1,
-    trainingInc: 1,
-    intelligenceInc: 1,
-    deathInc: 1,
-    capFactor: 1.5,
-    trainingCap: 100,
-    intelligenceCap: 100,
-    intelligenceAutoInc: 0,
-    trainingAutoInc: 0,
-    trainingMult: 1,
-    intelligenceMult: 1,
-    tick: 0,
     deathStatRevealed: false,
     hpTrainButtonRevealed: false,
     atkTrainButtonRevealed: false,
     autoIncTrainingRevealed: false,
     combatSkillsRevealed: false,
+
+    // death
+    deaths: 1,
+    deathInc: 1,
+
+    // Base factors
+    capFactor: 1.5,
+
+    // Intelligence
+    intelligence: 0,
+    intelligenceCap: 100,
+    intelligenceAutoInc: 0,
+    intelligenceInc: 1,
+
+    // training
+    training: 0,
+    trainingAutoInc: 0,
+    trainingMult: 1,
+    intelligenceMult: 1,
+    trainingInc: 1,
+    trainingCap: 100,
+
+    // Time
+    tick: 0,
     firstCombatEngaged: false,
     firstCombatWon: false,
     hasAwardedIntelligenceIncCap: false,
@@ -57,7 +68,22 @@ var gs = {
 
 
 var shardBosses = [];
-shardBosses.push(["Strange Creature", 10, 5, 1]);
+shardBosses.push(["Strange Creature", 10, 5, 1, 0]);
+
+// Random Encounters Phase1
+var randomEncounters = [];
+shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
+shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
+shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
+shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
+shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
+shardBosses.push(["Smashed Humanoid", 12, 2, 1, 0]);
+shardBosses.push(["Small Scavenger", 6, 6, 0, 1]);
+shardBosses.push(["Small Scavenger", 6, 6, 0, 1]);
+shardBosses.push(["Small Scavenger", 6, 6, 0, 1]);
+shardBosses.push(["Hunting Humanoid", 26, 12, 3, 1]);
+
+
 
 function lookAction() {
     if (!isAware) {
@@ -355,23 +381,9 @@ function runCombatRound() {
 
 }
 
-function combatRewards() {
-    checkSpecialCombatRewards();
-}
-
-function checkSpecialCombatRewards() {
-    if (gs.firstCombatEngaged) {
-        gs.firstCombatWon = true;
-        updateMainStory("Upon striking down this Strange Creature all of your surroundings twist and distort, and your amulet pulses strongly");
-        pulseStrongly();
-        updateMainStory("The creatures eyes, red a moment ago flash to a warm light orange color.  Suddenly the light in the eyes shoots out of the creature and move unerringly towards the amulet on your chest. ");
-        updateMainStory("A voice sounds off in your head: 'At last!  We are united once again!'");
-        updateMainStory("Suddenly you know, this creature was the 'Spirit of Creativity' and its a part of you.  You remember waking up in another room similar to this and knowing that the 'Spirit of Last Resort' was in danger.");
-        updateMainStory("For some strange reason though none of the other spirits appear reachable via the subnet so you cannot request aid.  Determined to not let the spirit die you decided to set out and try to intercept whatever was heading towards it.");
-        updateMainStory("About halfway to the 'Node of Last Resort' you ran into a fellow spirit also on the way to the node, perhaps they also saw the problem and are heading to help too?");
-        updateMainStory("Encouraged, you call out and the spirit turns.  Only then do you see the crackling red eyes streaked with black bolts of energy.  The spirit moves, almost too fast too see, and suddenly everything goes black.");
-        clearCombatInfo();
-    }
+function revealBoss1Stats() {
+        $('#tinkeringStat')[0].style.display="inline";
+        $('#scavengingStat')[0].style.display="inline";
 }
 
 function trackTime() {
@@ -449,6 +461,28 @@ function checkFirstCombat() {
     }
 }
 
+// Combat Functions
+
+function combatRewards() {
+    checkSpecialCombatRewards();
+}
+
+function checkSpecialCombatRewards() {
+    if (gs.firstCombatEngaged) {
+        gs.firstCombatWon = true;
+        updateMainStory("Upon striking down this Strange Creature all of your surroundings twist and distort, and your amulet pulses strongly");
+        pulseStrongly();
+        updateMainStory("The creatures eyes, red a moment ago flash to a warm light orange color.  Suddenly the light in the eyes shoots out of the creature and move unerringly towards the amulet on your chest. ");
+        updateMainStory("A voice sounds off in your head: 'At last!  We are united once again!'");
+        updateMainStory("Suddenly you know, this creature was the 'Spirit of Creativity' and its a part of you.  You remember waking up in another room similar to this and knowing that the 'Spirit of Last Resort' was in danger.");
+        updateMainStory("For some strange reason though none of the other spirits appear reachable via the subnet so you cannot request aid.  Determined to not let the spirit die you decided to set out and try to intercept whatever was heading towards it.");
+        updateMainStory("About halfway to the 'Node of Last Resort' you ran into a fellow spirit also on the way to the node, perhaps they also saw the problem and are heading to help too?");
+        updateMainStory("Encouraged, you call out and the spirit turns.  Only then do you see the crackling red eyes streaked with black bolts of energy.  The spirit moves, almost too fast too see, and suddenly everything goes black.");
+        clearCombatInfo();
+        revealBoss1Stats();
+    }
+}
+
 function revealCombatSkills() {
     $('#combatActions')[0].style.display="inline";
     $('#enemyStats')[0].style.display="block";
@@ -519,12 +553,10 @@ function resetTickMessages() {
 
 function resetAbilityScores() {
     gs.intelligence = 0;
-    updateIntelligence();
     gs.training = 0;
     player.hp=player.totalHp;
     gs.hasAwardedTrainingIncCap = false;
     gs.hasAwardedIntelligenceIncCap = false;
-    updateTraining(gs.training);
 }
 
 function incTraining() {
@@ -532,14 +564,6 @@ function incTraining() {
     if (gs.training > gs.trainingCap) {
         gs.training = gs.trainingCap;
     }
-}
-
-function updateTraining() {
-    $('#trainingValue')[0].innerHTML = gs.training;
-}
-
-function updateIntelligence() {
-    document.getElementById('intelligenceValue').innerHTML = gs.intelligence;
 }
 
 function updateActionFeedback(message) {
@@ -556,7 +580,8 @@ function getMonster(name, hp, atk, baseScrap) {
         name,
         hp,
         atk,
-        baseScrap
+        baseScrap,
+        baseNecroEnergy
     }
 }
 
@@ -564,6 +589,7 @@ function save() {
     store.set("player", player)
     store.set("gameState", gs);
     store.set("mob", mob);
+    updateActionFeedback("Game Saved.... ");
     return true;
 }
 
@@ -578,6 +604,8 @@ function load() {
     finishTutorial();
     processUnlocks();
     decorateToolTips();
+
+    updateActionFeedback("Game loaded....");
     return true;
 }
 
@@ -615,6 +643,9 @@ function processUnlocks() {
     if (gs.inCombat) {
         updateCombatInfo();
     }
+    if (gs.firstCombatWon) {
+        revealBoss1Stats();
+    }
 }
 
 $( document ).ready(function() {
@@ -624,5 +655,7 @@ $( document ).ready(function() {
     $('#saveGame').click(save);
     $('#loadGame').click(load);
     $('#hardReset').click(hardReset);
-    if (store.get("gameState") != null && confirm("Load your saved game?")) {load()}
+    // Might go back to this
+    //if (store.get("gameState") != null && confirm("Load your saved game?")) {load()}
+    if (store.get("gameState") != null) {load()}
 });
