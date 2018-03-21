@@ -490,6 +490,11 @@ function checkSpecialCombatRewards() {
         updateMainStory("For some strange reason though none of the other spirits appear reachable via the subnet so you cannot request aid.  Determined to not let the spirit die you decided to set out and try to intercept whatever was heading towards it.");
         updateMainStory("About halfway to the 'Node of Last Resort' you ran into a fellow spirit also on the way to the node, perhaps they also saw the problem and are heading to help too?");
         updateMainStory("Encouraged, you call out and the spirit turns.  Only then do you see the crackling red eyes streaked with black bolts of energy.  The spirit moves, almost too fast too see, and suddenly everything goes black.");
+        updateMainStory("");
+        updateMainStory("");
+        updateMainStory("");
+        updateMainStory("When you come back to your senses you see the last of the orange light absorb into your necklace.  Its over now.");
+        updateMainStory("But just then a lance of the angry red light shoots out from the scraps of the creature and strike the ruined door.  The world again distorts and shifts, but afterwards the red light fades away.");
         clearCombatInfo();
         revealBoss1Stats();
     }
@@ -503,6 +508,7 @@ function revealCombatSkills() {
 function updateCombatInfo() {
     $('#opponentName')[0].innerHTML = mob.name;
     $('#combatStatus')[0].innerHTML = "Engaged";
+    updateMainStory("A " + mob.name + " comes crashing through the door!");
 };
 
 function clearCombatInfo() {
@@ -541,6 +547,7 @@ function resetPhase1() {
         updateMainStory("You realize that there is also writing on the panel, and you can actually understand it.  The words say 'Subnet Status'");
         updateMainStory("Oddly, you appear to also know what's going on in the other location, and it appears that it is currently letting you know that a threat is approaching your location, and will most likely arrive in 50 ticks.");
         updateMainStory("Additionally you also seem to have access to new skills, which should in turn open up new ways to deal with incoming threats.");
+        updateMainStory("Unfortunately the damage to your door remains, and you are now vulnerable to attack from the outside.  Its probably time to prepare for the next creature coming your way.");
         firstCombatUnlocksRevealed = true;
     }
 };
