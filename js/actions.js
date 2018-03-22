@@ -6,9 +6,6 @@ var isAware = true;
 var awareness = 0;
 var tutorial = 0;
 
-// In progress, will add to state when ready
-var firstCombatUnlocksRevealed = false;
-
 var mob;
 
 var player = {
@@ -28,6 +25,12 @@ var gs = {
     atkTrainButtonRevealed: false,
     autoIncTrainingRevealed: false,
     combatSkillsRevealed: false,
+    firstCombatUnlocksRevealed: false,
+    scrapRevealed: false,
+
+    // scrap
+    scrap: 0,
+    scrapCap: 50,
 
     // death
     deaths: 1,
@@ -36,19 +39,30 @@ var gs = {
     // Base factors
     capFactor: 1.5,
 
-    // Intelligence
+    // Stats Economy
     intelligence: 0,
     intelligenceCap: 100,
     intelligenceAutoInc: 0,
     intelligenceInc: 1,
+    intelligenceMult: 1,
 
-    // training
     training: 0,
     trainingAutoInc: 0,
     trainingMult: 1,
-    intelligenceMult: 1,
     trainingInc: 1,
     trainingCap: 100,
+
+    tinkering: 0,
+    tinkeringAutoInc: 0,
+    tinkeringMult: 1,
+    tinkeringInc: 1,
+    tinkeringCap: 100,
+
+    scavenging: 0,
+    scavengingAutoInc: 0,
+    scavengingMult: 1,
+    scavengingInc: 1,
+    scavengingCap: 100,
 
     // Time
     tick: 0,
@@ -56,6 +70,8 @@ var gs = {
     firstCombatWon: false,
     hasAwardedIntelligenceIncCap: false,
     hasAwardedTrainingIncCap: false,
+    hasAwardedTinkeringIncCap: false,
+    hasAwardedScavengingIncCap: false,
     firstTimeMessage: false,
     secondTimeMessage: false,
     inCombat: false,
@@ -73,14 +89,14 @@ shardBosses.push(["Strange Creature", 10, 5, 1, 0]);
 // Random Encounters Phase1
 var randomEncountersArray = [];
 randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
+randomEncountersArray.push(["Smashed Humanoid", 20, 2, 1, 0]);
+randomEncountersArray.push(["Damaged Humanoid", 12, 8, 1, 0]);
 randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
-randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
-randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
-randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
-randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
-randomEncountersArray.push(["Small Scavenger", 6, 6, 0, 1]);
-randomEncountersArray.push(["Small Scavenger", 6, 6, 0, 1]);
-randomEncountersArray.push(["Small Scavenger", 6, 6, 0, 1]);
+randomEncountersArray.push(["Smashed Humanoid", 12, 3, 1, 0]);
+randomEncountersArray.push(["Smashed Hulking Humanoid", 17, 2, 1, 0]);
+randomEncountersArray.push(["Small Scavenger", 10, 6, 0, 1]);
+randomEncountersArray.push(["Small Scavenger", 6, 9, 0, 1]);
+randomEncountersArray.push(["Small Vicious Scavenger", 7, 16, 0, 1]);
 randomEncountersArray.push(["Hunting Humanoid", 26, 12, 3, 1]);
 
 
@@ -164,6 +180,18 @@ function trainHp() {
     }
 }
 
+function tinkeringAction() {
+    incStat('tinkering');
+    updateActionFeedback('You tinker around with the scrap in the room.');
+    trackTime();
+}
+
+function scavengingAction() {
+    incStat('scavenging');
+    updateActionFeedback('You scavenge around the room for parts you can use, trying to learn to be more efficient in their application.');
+    trackTime();
+}
+
 function lookPhase1() {
     //incIntellect();
     incStat('intelligence');
@@ -179,6 +207,35 @@ function revealCaps() {
 function revealInc() {
     $('#intelligenceIncContainer')[0].style.display="inline";
     $('#trainingIncContainer')[0].style.display="inline";
+}
+
+function checkTinkeringUnlocks() {
+    if (!gs.hasAwardedTinkeringIncCap && gs.tinkering >= 10 && gs.tinkeringInc < 10) {
+        gs.tinkeringInc++;
+        gs.hasAwardedTinkeringIncCap = true;
+        updateActionFeedback('Messing around with the items in the room leads you to a deeper understanding of how they work. (+1 Tinkering per Click)');
+        pulseGently();
+    }
+}
+
+function checkScavengingUnlocks() {
+    if (!gs.hasAwardedScavengingIncCap && gs.scavenging >= 10 && gs.scavengingInc < 10) {
+        gs.scavengingInc++;
+        gs.hasAwardedScavengingIncCap = true;
+        updateActionFeedback('You hunt around in the wreckage of the room, getting more adept at finding useful items in the area. (+1 Scavenging per Click)');
+        pulseGently();
+    } else if (gs.scavenging > 25 && !gs.scrapRevealed) {
+        gs.scrapRevealed = true;
+        updateMainStory('Thinking about the robotic monsters you are encountering, you idly wonder if you could harvest their parts.');
+        pulseStrongly();
+        updateMainStory('Suddenly one of the panels on the wall stats to glow blue.  Lettering flows on the screen reading the following:');
+        updateMainStory('Experimental Material Storage');
+        updateMainStory('Scrap 0/50');
+        updateMainStory();
+        updateMainStory();
+        updateMainStory('Now your amulet emits a voice: "Storage Room online, materials recognized as useful will automatically transfer via temporal interface."');
+        $('#scrapStats')[0].style.display="inline";
+    }
 }
 
 function checkIntelligenceUnlocks () {
@@ -227,17 +284,9 @@ function revealAutoIncTraining() {
 }
 
 function decorateToolTips() {
-    $('#intelligenceValue')[0].innerHTML = gs.intelligence;
-    $('#trainingValue')[0].innerHTML = gs.training;
+    decorateStat('intelligence');
+    decorateStat('training');
     $('#tickValue')[0].innerHTML = gs.tick;
-    if (gs.capsRevealed) {
-        $('#intelligenceCap')[0].innerHTML=gs.intelligenceCap;
-        $('#trainingCap')[0].innerHTML=gs.trainingCap;
-    }
-    if (gs.incRevealed) {
-        $('#intelligenceInc')[0].innerHTML=gs.intelligenceInc;
-        $('#trainingInc')[0].innerHTML=gs.trainingInc;
-    }
     if (gs.combatRevealed) {
         $('#hpValue')[0].innerHTML='' + player.hp + '/' + player.totalHp;
         $('#atkValue')[0].innerHTML=player.atk;
@@ -245,14 +294,25 @@ function decorateToolTips() {
     if (gs.deathStatRevealed) {
         $('#deathValue')[0].innerHTML=gs.deaths;
     }
-    if (gs.autoIncTrainingRevealed) {
-        $('#intelligenceAutoInc')[0].innerHTML=gs.intelligenceAutoInc;
-        $('#trainingAutoInc')[0].innerHTML=gs.trainingAutoInc;
-    }
     if (gs.combatSkillsRevealed) {
         $('#basicAttackCost')[0].innerHTML=gs.basicAttackCost;
         $('#basicAttackTNL')[0].innerHTML=gs.basicAttackExp + '/' + gs.basicAttackLevelUpCost;
     }
+    if (gs.firstCombatUnlocksRevealed) {
+        //$('#tinkeringValue')[0].innerHTML = gs.tinkering;
+        decorateStat('tinkering');
+        decorateStat('scavenging');
+
+
+
+    }
+}
+
+function decorateStat(stat) {
+    $('#'+stat+'Value')[0].innerHTML = gs[stat];
+    $('#'+stat+'Cap')[0].innerHTML=gs[stat+'Cap'];
+    $('#'+stat+'Inc')[0].innerHTML=gs[stat+'Inc'];
+    $('#'+stat+'AutoInc')[0].innerHTML=gs[stat+'AutoInc'];
 }
 
 function trainPhase1() {
@@ -327,21 +387,12 @@ function incStat(stat) {
     }
 }
 
-function autoIncIntellect() {
-    if (gs.intelligenceAutoInc > 0) {
-        gs.intelligence += gs.intelligenceAutoInc;
+function autoIncStat(stat) {
+    if (gs[stat+'AutoInc'] > 0) {
+        gs[stat] += gs[stat+'AutoInc'];
     }
-    if (gs.intelligence > gs.intelligenceCap) {
-        gs.intelligence = gs.intelligenceCap;
-    }
-}
-
-function autoIncTraining() {
-    if (gs.trainingAutoInc > 0) {
-        gs.training += gs.trainingAutoInc;
-    }
-    if (gs.training > gs.trainingCap) {
-        gs.training = gs.trainingCap;
+    if (gs[stat] > gs[stat+'Cap']) {
+        gs[stat] = gs[stat+'Cap'];
     }
 }
 
@@ -384,19 +435,26 @@ function runCombatRound() {
 }
 
 function revealBoss1Stats() {
-        $('#tinkeringStat')[0].style.display="inline";
-        $('#scavengingStat')[0].style.display="inline";
+        revealStatUI('tinkering','tinker');
+        revealStatUI('scavenging','scavenge');
+}
+
+function revealStatUI(stat, actionName) {
+    $('#'+stat+'Stat')[0].style.display="inline";
+    $('#'+actionName+'')[0].style.display="inline";
 }
 
 function trackTime() {
 
     // FIre the auto inc's
-    autoIncTraining();
-    autoIncIntellect();
+    autoIncStat('training');
+    autoIncStat('intelligence');
 
     // Check for stat unlocks!
     checkIntelligenceUnlocks()
     checkTrainingUnlocks();
+    checkTinkeringUnlocks();
+    checkScavengingUnlocks();
 
     // Level Up Combat Skills
     levelUpCombatSkills();
@@ -408,7 +466,7 @@ function trackTime() {
             resetPhase1();
             clearCombatInfo();
         }
-    } else if (gs.firstCombatWon) {
+    } else if (gs.firstCombatWon && gs.tick > 15) {
         randomEncounters();
     }
 
@@ -427,7 +485,7 @@ function trackTime() {
 }
 
 function randomEncounters() {
-    if (Math.floor((Math.random() * 100) + 1) <= 25) {
+    if (Math.floor((Math.random() * 100) + 1) <= 15) {
         mob = getMonster(...randomEncountersArray[Math.floor((Math.random() * randomEncountersArray.length))]);
         updateCombatInfo();
         runCombatIntro();
@@ -481,11 +539,28 @@ function checkFirstCombat() {
 // Combat Functions
 
 function combatRewards() {
+    if (gs.scrapRevealed) {
+        awardScrap(mob.baseScrap);
+    }
     checkSpecialCombatRewards();
 }
 
+function awardScrap(loot) {
+    if (gs.scrap <= gs.scrapCap) {
+        gs.scrap += loot;
+        if (gs.scrap > gs.scrapCap) {
+            gs.scrap == gs.scrapCap;
+            updateMainStory("Your scrap storage now full.");
+        } else {
+            updateMainStory(loot + " scrap deposits into storage.");
+        }
+    } else {
+        updateMainStory("Your scrap storage is already full.");
+    }
+}
+
 function checkSpecialCombatRewards() {
-    if (gs.firstCombatEngaged) {
+    if (gs.firstCombatEngaged && !gs.firstCombatWon) {
         gs.firstCombatWon = true;
         updateMainStory("Upon striking down this Strange Creature all of your surroundings twist and distort, and your amulet pulses strongly");
         pulseStrongly();
@@ -501,7 +576,6 @@ function checkSpecialCombatRewards() {
         updateMainStory("When you come back to your senses you see the last of the orange light absorb into your necklace.  Its over now.");
         updateMainStory("But just then a lance of the angry red light shoots out from the scraps of the creature and strike the ruined door.  The world again distorts and shifts, but afterwards the red light fades away.");
         clearCombatInfo();
-        revealBoss1Stats();
     }
 }
 
@@ -550,13 +624,14 @@ function resetPhase1() {
     decorateToolTips();
     updateActionFeedback('You have died!  The item on your chest flashes a brilliant blue and you stream back to the start of your loop!');
 
-    if(gs.firstCombatWon && !firstCombatUnlocksRevealed) {
-        updateMainStory('This time when you come to, something has changed.  One of the panels that lines the wall of your room has come alive.  Circular Pattern on it with 12 circles spread around the diameter, one of the circles, the one to the north is lit up and is colored a warm light orange. Additionally there is one larger circle in the middle colored a pleasing light blue.');
-        updateMainStory("You realize that there is also writing on the panel, and you can actually understand it.  The words say 'Subnet Status'");
-        updateMainStory("Oddly, you appear to also know what's going on in the other location, and it appears that it is currently letting you know that a threat is approaching your location, and will most likely arrive in 50 ticks.");
-        updateMainStory("Additionally you also seem to have access to new skills, which should in turn open up new ways to deal with incoming threats.");
+    if(gs.firstCombatWon && !gs.firstCombatUnlocksRevealed) {
+        updateMainStory('This time when you come to, something has changed.  One of the panels that lines the wall of your room has come alive. There is a Circular Pattern on it with 12 circles spread around the diameter, one of the circles, the one to the north is lit up and is colored a warm light orange. Additionally there is one larger circle in the middle colored a pleasing light blue.');
+        updateMainStory("You realize that there is also writing on the panel, and you can actually understand it.  The words say 'Subnet Status: Station Creation Online'");
+        updateMainStory("Somehow also you know that a threat is approaching your location, and will most likely arrive in 50 ticks.");
+        updateMainStory("You also seem to have access to new skills, which should in turn open up new ways to deal with incoming threats.");
         updateMainStory("Unfortunately the damage to your door remains, and you are now vulnerable to attack from the outside.  Its probably time to prepare for the next creature coming your way.");
-        firstCombatUnlocksRevealed = true;
+        gs.firstCombatUnlocksRevealed = true;
+        revealBoss1Stats();
     }
 };
 
@@ -581,9 +656,13 @@ function resetTickMessages() {
 function resetAbilityScores() {
     gs.intelligence = 0;
     gs.training = 0;
+    gs.tinkering = 0;
+    gs.scavenging = 0;
     player.hp=player.totalHp;
     gs.hasAwardedTrainingIncCap = false;
     gs.hasAwardedIntelligenceIncCap = false;
+    gs.hasAwardedScavengingIncCap = false;
+    gs.hasAwardedTinkeringIncCap = false;
 }
 
 function updateActionFeedback(message) {
@@ -663,13 +742,15 @@ function processUnlocks() {
     if (gs.inCombat) {
         updateCombatInfo();
     }
-    if (gs.firstCombatWon) {
+    if (gs.firstCombatUnlocksRevealed) {
         revealBoss1Stats();
     }
 }
 
 $( document ).ready(function() {
     $('#look').click(lookAction);
+    $('#tinker').click(tinkeringAction);
+    $('#scavenge').click(scavengingAction);
     $('#versionNumber')[0].innerHTML = 'Version: ' + versionNumber;
     $('#basicAttack').click(basicAttackClick);
     $('#saveGame').click(save);
