@@ -815,7 +815,7 @@ function processUnlocks() {
     if (gs.essenceRevealed) {
         revealEssence();
     }
-    if (gs.revealAutomation) {
+    if (gs.automationRevealed) {
         revealAutomation();
     }
 }
