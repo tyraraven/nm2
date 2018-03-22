@@ -256,7 +256,8 @@ function decorateToolTips() {
 }
 
 function trainPhase1() {
-    incTraining();
+    //incTraining();
+    incStat('training');
     updateActionFeedback('You attempt to figure out how to move around in this body more effectively');
     trackTime();
 }
@@ -317,13 +318,6 @@ function pulseStrongly() {
     {
         $('#amulet')[0].style.animation = "";
     }, 5000);
-}
-
-function incIntellect() {
-    gs.intelligence += (gs.intelligenceInc * gs.intelligenceMult);
-    if (gs.intelligence > gs.intelligenceCap) {
-        gs.intelligence = gs.intelligenceCap;
-    }
 }
 
 function incStat(stat) {
@@ -456,10 +450,13 @@ function checkFirstCombat() {
             if (!gs.combatSkillsRevealed) {
                 if (gs.intelligence < 100 && gs.training < 100) {
                     updateMainStory('The creature bursts into the room, and finishes you off just like before.');
+                    resetPhase1();
                 } else if (gs.intelligence < 100) {
                     updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
+                    resetPhase1();
                 } else if (gs.training < 100) {
                     updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
+                    resetPhase1();
                 }
             }
 
@@ -476,8 +473,6 @@ function checkFirstCombat() {
                         revealCombatSkills();
                     }
                     updateCombatInfo();
-            } else {
-                    resetPhase1();
             }
         }
     }
@@ -589,13 +584,6 @@ function resetAbilityScores() {
     player.hp=player.totalHp;
     gs.hasAwardedTrainingIncCap = false;
     gs.hasAwardedIntelligenceIncCap = false;
-}
-
-function incTraining() {
-    gs.training = gs.training + (gs.trainingInc * gs.trainingMult);
-    if (gs.training > gs.trainingCap) {
-        gs.training = gs.trainingCap;
-    }
 }
 
 function updateActionFeedback(message) {
