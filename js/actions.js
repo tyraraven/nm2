@@ -28,6 +28,7 @@ var gs = {
     firstCombatUnlocksRevealed: false,
     scrapRevealed: false,
     essenceRevealed: false,
+    automationRevealed: false,
 
     // scrap
     scrap: 0,
@@ -50,24 +51,32 @@ var gs = {
     intelligenceAutoInc: 0,
     intelligenceInc: 1,
     intelligenceMult: 1,
+    intelligenceRobot: 0,
+    intelligenceRobotCap: 5,
 
     training: 0,
     trainingAutoInc: 0,
     trainingMult: 1,
     trainingInc: 1,
     trainingCap: 100,
+    trainingRobot: 0,
+    trainingRobotCap: 5,
 
     tinkering: 0,
     tinkeringAutoInc: 0,
     tinkeringMult: 1,
     tinkeringInc: 1,
     tinkeringCap: 100,
+    tinkeringRobot: 0,
+    tinkeringRobotCap: 5,
 
     scavenging: 0,
     scavengingAutoInc: 0,
     scavengingMult: 1,
     scavengingInc: 1,
     scavengingCap: 100,
+    scavengingRobot: 0,
+    scavengingRobotCap: 0,
 
     // Time
     tick: 0,
@@ -220,6 +229,23 @@ function checkTinkeringUnlocks() {
         gs.hasAwardedTinkeringIncCap = true;
         updateActionFeedback('Messing around with the items in the room leads you to a deeper understanding of how they work. (+1 Tinkering per Click)');
         pulseGently();
+    } else if (gs.tinkering > 25 && !gs.automationRevealed) {
+        gs.automationRevealed=true;
+        updateMainStory("Looking at all of the scrap lying around you think that you might be able to get some of the robots working again if you had enough Vitae and scrap.");
+        pulseStrongly();
+        updateMainStory("Suddenly the wall on the opposite side of the door turns translucent, and you see images of yourself doing various tasks. ");
+        updateMainStory('You hear what you think is your own human voice coming from the amulet: "Temporal Automation is the key to me accomplishing my goal.  If I study a task long enough I should be able to create a robot to perform it for me in a micro time loop."');
+        updateMainStory('"Unfortunately I\'ve never been able to collect enough temporal energy to put it in practice so far, but when I can this will be absolutely invaluable to me.');
+        updateMainStory('"I\'ve created this temporal interface to drive this experiment forward, wish me luck Sophia."');
+        updateMainStory('With that the voice stops speaking and numbers appear on the screen, perhaps this is the required amount of temporal energy to complete the task?  This is going to be expensive as hell, but you can\'t help but wonder if its worth trying out.');
+        revealAutomation();
+        updateMainStory("The panel has an angry red message across the top of it: Temporal Emergency Event Detected, micro loops have collapsed and are unrecoverable, do you want to clear temporal pointers?");
+        updateMainStory("With little real idea of what's going on you press what you think is the confirmation button.  Blue light flashes in the room, and now the screen is replaced with a interface labeled 'Temporal Automation System Core (TASC)'");
+    } else if (gs.tinkering >= gs.tinkeringCap) {
+                    gs.tinkeringCap = Math.round(gs.tinkeringCap = gs.tinkeringCap * gs.capFactor);
+                    gs.tinkering = 0;
+                    updateMainStory("Suddenly you realize everything up until now that you have created was just garbage.  Armed with this knowledge you start again determined to do better.");
+                    pulseGently();
     }
 }
 
@@ -248,6 +274,11 @@ function checkScavengingUnlocks() {
         pulseStrongly();
         updateMainStory("A voice speaks from the amulet: Vitae storage online");
         revealEssence();
+    } else if (gs.scavenging >= gs.scavengingCap) {
+              gs.scavengingCap = Math.round(gs.scavengingCap = gs.scavengingCap * gs.capFactor);
+              gs.scavenging = 0;
+              updateMainStory("You realize that you haven't even really begun to find all of the things your fallen foes could do for you.  While this means you need to start looking through the remains again, you feel like you will do a better job this time.");
+              pulseGently();
     }
 }
 
@@ -466,6 +497,10 @@ function revealBoss1Stats() {
 function revealStatUI(stat, actionName) {
     $('#'+stat+'Stat')[0].style.display="inline";
     $('#'+actionName+'')[0].style.display="inline";
+}
+
+function revealAutomation() {
+    $('#automationActions')[0].style.display="block";
 }
 
 function trackTime() {
@@ -779,6 +814,18 @@ function processUnlocks() {
     }
     if (gs.essenceRevealed) {
         revealEssence();
+    }
+    if (gs.revealAutomation) {
+        revealAutomation();
+    }
+}
+
+function toggleAutomation() {
+    let panel = $('#automationPanel')[0];
+    if (panel.style.display=="block") {
+        panel.style.display="none";
+    } else {
+        panel.style.display="block";
     }
 }
 
