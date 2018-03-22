@@ -27,10 +27,15 @@ var gs = {
     combatSkillsRevealed: false,
     firstCombatUnlocksRevealed: false,
     scrapRevealed: false,
+    essenceRevealed: false,
 
     // scrap
     scrap: 0,
     scrapCap: 50,
+
+    // Essence
+    essence: 0,
+    essenceCap: 50,
 
     // death
     deaths: 1,
@@ -234,8 +239,24 @@ function checkScavengingUnlocks() {
         updateMainStory();
         updateMainStory();
         updateMainStory('Now your amulet emits a voice: "Storage Room online, materials recognized as useful will automatically transfer via temporal interface."');
-        $('#scrapStats')[0].style.display="inline";
+        revealScrap();
+    } else if (gs.scavenging > 75 && !gs.essenceRevealed) {
+        gs.essenceRevealed = true;
+        updateMainStory('One of the non robotic monsters corpses shudders and twitches on the floor.');
+        updateMainStory('Suddenly you think to yourself, "Why am I letting this Life Essence go to waste, I should be draining my foes after I kill them"');
+        updateMainStory('Horrified at this sudden thought, you are even more distressed when your amulet pulses in response.');
+        pulseStrongly();
+        updateMainStory("A voice speaks from the amulet: Vitae storage online");
+        revealEssence();
     }
+}
+
+function revealEssence() {
+    $('#essenceStats')[0].style.display="inline";
+}
+
+function revealScrap() {
+    $('#scrapStats')[0].style.display="inline";
 }
 
 function checkIntelligenceUnlocks () {
@@ -302,9 +323,12 @@ function decorateToolTips() {
         //$('#tinkeringValue')[0].innerHTML = gs.tinkering;
         decorateStat('tinkering');
         decorateStat('scavenging');
-
-
-
+    }
+    if (gs.scrapRevealed) {
+        $('#scrapValue')[0].innerHTML=gs.scrap + '/' + gs.scrapCap;
+    }
+    if (gs.essenceRevealed) {
+        $('#essenceValue')[0].innerHTML=gs.essence + '/' + gs.essenceCap;
     }
 }
 
@@ -540,22 +564,27 @@ function checkFirstCombat() {
 
 function combatRewards() {
     if (gs.scrapRevealed) {
-        awardScrap(mob.baseScrap);
+        awardLoot('scrap', mob.baseScrap);
+    }
+    if (gs.essenceRevealed) {
+        awardLoot('essence', mob.baseNecroEnergy);
     }
     checkSpecialCombatRewards();
 }
 
-function awardScrap(loot) {
-    if (gs.scrap <= gs.scrapCap) {
-        gs.scrap += loot;
-        if (gs.scrap > gs.scrapCap) {
-            gs.scrap == gs.scrapCap;
-            updateMainStory("Your scrap storage now full.");
+function awardLoot(type, amount) {
+    if (amount != 0) {
+        if (gs[type] <= gs[type+'Cap']) {
+            gs[type] += amount;
+            if (gs[type] > gs[type+'Cap']) {
+                gs[type] == gs[type+'Cap'];
+                updateMainStory("Your " + type + " storage now full.");
+            } else {
+                updateMainStory(amount + " " + type + " deposits into storage.");
+            }
         } else {
-            updateMainStory(loot + " scrap deposits into storage.");
+            updateMainStory("Your " + type + " storage is already full.");
         }
-    } else {
-        updateMainStory("Your scrap storage is already full.");
     }
 }
 
@@ -744,6 +773,12 @@ function processUnlocks() {
     }
     if (gs.firstCombatUnlocksRevealed) {
         revealBoss1Stats();
+    }
+    if (gs.scrapRevealed) {
+        revealScrap();
+    }
+    if (gs.essenceRevealed) {
+        revealEssence();
     }
 }
 
