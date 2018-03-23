@@ -1,5 +1,5 @@
 // Version number
-var versionNumber = '0.31820';
+var versionNumber = '0.32.31.8';
 
 // Awareness Intro Game Stat
 var isAware = true;
