@@ -45,6 +45,11 @@ var gs = {
     // Base factors
     capFactor: 1.5,
 
+    // research
+    temporalResearch: 0,
+    temporalResearchCap: 1000,
+    temporalResearchLevel: 1,
+
     // Stats Economy
     intelligence: 0,
     intelligenceCap: 100,
@@ -139,7 +144,7 @@ function lookAction() {
 function finishTutorial() {
     document.getElementById('mainStats').style.display='block';
     document.getElementById('actionFeedback').style.display='block';
-    document.getElementById('train').style.display='inline';
+    document.getElementById('train').style.display='block';
     document.getElementById('look').innerHTML = 'Consider';
     updateMainStory('You are in a room with patterns on the walls.');
     $("#look").off("click");
@@ -356,11 +361,18 @@ function decorateToolTips() {
         decorateStat('scavenging');
     }
     if (gs.scrapRevealed) {
-        $('#scrapValue')[0].innerHTML=gs.scrap + '/' + gs.scrapCap;
+        decorateCapStat('scrap')
     }
     if (gs.essenceRevealed) {
-        $('#essenceValue')[0].innerHTML=gs.essence + '/' + gs.essenceCap;
+       decorateCapStat('essence');
     }
+    if (gs.automationRevealed) {
+        decorateCapStat('temporalResearch');
+    }
+}
+
+function decorateCapStat(stat) {
+    $('#'+stat+'Value')[0].innerHTML=gs[stat] + '/' + gs[stat+'Cap'];
 }
 
 function decorateStat(stat) {
@@ -495,8 +507,8 @@ function revealBoss1Stats() {
 }
 
 function revealStatUI(stat, actionName) {
-    $('#'+stat+'Stat')[0].style.display="inline";
-    $('#'+actionName+'')[0].style.display="inline";
+    $('#'+stat+'Stat')[0].style.display="";
+    $('#'+actionName+'')[0].style.display="";
 }
 
 function revealAutomation() {
