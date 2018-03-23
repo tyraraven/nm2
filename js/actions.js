@@ -430,21 +430,10 @@ function revealAtkTrainButton() {
 
 function pulseGently() {
     updateMainStory('The item on your chest pulses gently once.');
-    $('#amulet')[0].style.animation = "pulse 2s";
-    setTimeout(function ()
-    {
-        $('#amulet')[0].style.animation = "";
-    }, 2000);
-
 }
 
 function pulseStrongly() {
     updateMainStory('The item on your chest pulses strongly, something significant has changed.');
-    $('#amulet')[0].style.animation = "pulse 5s";
-    setTimeout(function ()
-    {
-        $('#amulet')[0].style.animation = "";
-    }, 5000);
 }
 
 function incStat(stat) {
@@ -712,7 +701,7 @@ function resetPhase1() {
 };
 
 function revealDeathStat() {
-    $('#deathStat')[0].style.display="block";
+    $('#deathStat')[0].style.display="";
 }
 
 function unlockDeathUpgrades() {
