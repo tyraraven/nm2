@@ -22,7 +22,7 @@
 <body>
 <div id="mainStats" class="container-fluid border rounded border-secondary" style="display:none">
     <span class="row">
-        <span class="col-sm-2 border border-dark ">Intelligence: <span id="intelligenceValue">0</span></span>
+        <span class="col-sm-2 border border-dark">Intelligence: <span id="intelligenceValue">0</span></span>
         <span class="col-sm-2 border border-dark" id="intelligenceCapContainer" style="display:none">Cap: <span id="intelligenceCap">0</span></span>
         <span class="col-sm-2 border border-dark" id="intelligenceIncContainer" style="display:none">Inc/Click: <span id="intelligenceInc">0</span></span>
         <span class="col-sm-2 border border-dark" id="intelligenceAutoIncContainer" style="display:none">Inc/Tick: <span id="intelligenceAutoInc">0</span></span>
@@ -81,10 +81,17 @@
     </span>
 </div>
 <div id="enemyStats" style="display:none;" class="container-fluid">
-    <span class="statsBox" id="combatStatus">None</span><span id="opponentName" class="statsBox"></span>
+    <span class="row">
+        <span class="col-sm-3 border border-dark">Combat Status: <span id="combatStatus">None</span></span>
+        <span class="col-sm-3 border border-dark">Opponent: <span id="opponentName"></span></span>
+    </span>
 </div>
 <div id="combatActions" style="display:none;" class="container-fluid">
-    <span class="statsBox"><button id="basicAttack">Attack</button> Cost: <span id="basicAttackCost" class="statsBox">150 (Training)</span> Experience: <span id="basicAttackTNL" class="statsBox">0/10</span></span>
+    <span class="row">
+        <span class="col-sm-3 border border-dark"><button id="basicAttack">Attack</button> Cost: <span id="basicAttackCost">150 (Training)</span></span>
+            <span class="col-sm-3 border border-dark">Experience: <span id="basicAttackTNL">0/10</span>
+        </span>
+    </span>
 </div>
 <div id="automationActions" style="display:none;" class="container-fluid">
     <button id="toggleAutomation" onClick="toggleAutomation();">TASC</button>

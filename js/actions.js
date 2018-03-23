@@ -336,8 +336,8 @@ function checkIntelligenceUnlocks () {
 function revealAutoIncTraining() {
     $('#intelligenceAutoIncContainer')[0].style.display="inline";
     $('#trainingAutoIncContainer')[0].style.display="inline";
-    $('#intelligenceAutoIncContainer').click(trainAutoIntInc);
-    $('#trainingAutoIncContainer').click(trainAutoTrainingInc);
+    $('#trainAutoIntelligenceInc').click(trainAutoIntInc);
+    $('#trainAutoTrainingInc').click(trainAutoTrainingInc);
 }
 
 function decorateToolTips() {
@@ -652,6 +652,7 @@ function revealCombatSkills() {
 function updateCombatInfo() {
     $('#opponentName')[0].innerHTML = mob.name;
     $('#combatStatus')[0].innerHTML = "Engaged";
+    $('#combatStatus')[0].classList.add("bg-danger");
 };
 
 function runCombatIntro() {
@@ -660,7 +661,8 @@ function runCombatIntro() {
 
 function clearCombatInfo() {
     $('#opponentName')[0].innerHTML = "No Opponent";
-    $('#combatStatus')[0].innerHTML = "Free";
+    $('#combatStatus')[0].innerHTML = "None";
+    $('#combatStatus')[0].classList.remove("bg-danger");
 }
 
 function levelUpCombatSkills() {
