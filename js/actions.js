@@ -59,6 +59,10 @@ var gs = {
     intelligenceRobot: 0,
     intelligenceRobotCap: 5,
 
+    // kill stats
+    bossesKilled: 1,
+    monstersKilled: 0,
+
     training: 0,
     trainingAutoInc: 0,
     trainingMult: 1,
@@ -176,6 +180,30 @@ function trainAutoTrainingInc() {
     }
 }
 
+function trainAutoTinkeringInc() {
+    if (gs.deaths < 10) {
+        alert('You need more temporal energy to train this stat');
+        return false;
+    } else {
+        gs.deaths -= 10;
+        gs.tinkeringAutoInc++;
+        updateActionFeedback('You channel temporal energy towards your training time, old you is helping new you be more creative');
+        trackTime();
+    }
+}
+
+function trainAutoScavengingInc() {
+    if (gs.deaths < 10) {
+        alert('You need more temporal energy to train this stat');
+        return false;
+    } else {
+        gs.deaths -= 10;
+        gs.scavengingAutoInc++;
+        updateActionFeedback('You channel temporal energy towards your training time, old you is helping new you be more resourceful');
+        trackTime();
+    }
+}
+
 function trainAtk() {
     if (gs.training < 150) {
         alert('Not enough training, need 150 to increase hp.');
@@ -265,10 +293,10 @@ function checkScavengingUnlocks() {
         updateMainStory('Thinking about the robotic monsters you are encountering, you idly wonder if you could harvest their parts.');
         pulseStrongly();
         updateMainStory('Suddenly one of the panels on the wall stats to glow blue.  Lettering flows on the screen reading the following:');
-        updateMainStory('Experimental Material Storage');
+        updateMainStory('Experimental Material Storage:');
         updateMainStory('Scrap 0/50');
-        updateMainStory();
-        updateMainStory();
+        updateMainStory("");
+        updateMainStory("");
         updateMainStory('Now your amulet emits a voice: "Storage Room online, materials recognized as useful will automatically transfer via temporal interface."');
         revealScrap();
     } else if (gs.scavenging > 75 && !gs.essenceRevealed) {
@@ -280,10 +308,10 @@ function checkScavengingUnlocks() {
         updateMainStory("A voice speaks from the amulet: Vitae storage online");
         revealEssence();
     } else if (gs.scavenging >= gs.scavengingCap) {
-              gs.scavengingCap = Math.round(gs.scavengingCap = gs.scavengingCap * gs.capFactor);
-              gs.scavenging = 0;
-              updateMainStory("You realize that you haven't even really begun to find all of the things your fallen foes could do for you.  While this means you need to start looking through the remains again, you feel like you will do a better job this time.");
-              pulseGently();
+        gs.scavengingCap = Math.round(gs.scavengingCap = gs.scavengingCap * gs.capFactor);
+        gs.scavenging = 0;
+        updateMainStory("You realize that you haven't even really begun to find all of the things your fallen foes could do for you.  While this means you need to start looking through the remains again, you feel like you will do a better job this time.");
+        pulseGently();
     }
 }
 
@@ -369,6 +397,19 @@ function decorateToolTips() {
     if (gs.automationRevealed) {
         decorateCapStat('temporalResearch');
     }
+}
+
+function temporalResearchAction() {
+    alert('yes');
+    if (gs.intelligence > 0) {
+        gs.temporalResearch += gs.intelligence;
+        gs.intelligence = 0;
+        if (gs.temporalResearch > gs.temporalResearchCap) {
+            gs.temporalResearch = gs.temporalResearchCap;
+        }
+        trackTime();
+    }
+    return false;
 }
 
 function decorateCapStat(stat) {
@@ -509,6 +550,8 @@ function trackTime() {
     // FIre the auto inc's
     autoIncStat('training');
     autoIncStat('intelligence');
+    autoIncStat('tinkering');
+    autoIncStat('scavenging');
 
     // Check for stat unlocks!
     checkIntelligenceUnlocks()
@@ -605,6 +648,7 @@ function combatRewards() {
     if (gs.essenceRevealed) {
         awardLoot('essence', mob.baseNecroEnergy);
     }
+    gs.monstersKilled++;
     checkSpecialCombatRewards();
 }
 
@@ -684,7 +728,7 @@ function resetPhase1() {
     resetTickMessages();
     gs.tick = 0;
 
-    gs.deaths++;
+    gs.deaths += (1 * gs.bossesKilled);
     // Death based upgrades go here
     unlockDeathUpgrades();
 
@@ -698,6 +742,7 @@ function resetPhase1() {
         updateMainStory("You also seem to have access to new skills, which should in turn open up new ways to deal with incoming threats.");
         updateMainStory("Unfortunately the damage to your door remains, and you are now vulnerable to attack from the outside.  Its probably time to prepare for the next creature coming your way.");
         gs.firstCombatUnlocksRevealed = true;
+        gs.bossesKilled++;
         revealBoss1Stats();
     }
 };
@@ -811,6 +856,9 @@ function processUnlocks() {
     }
     if (gs.firstCombatUnlocksRevealed) {
         revealBoss1Stats();
+        if (gs.bossesKilled < 2) {
+            gs.bossesKilled = 2;
+        }
     }
     if (gs.scrapRevealed) {
         revealScrap();
@@ -841,6 +889,9 @@ $( document ).ready(function() {
     $('#saveGame').click(save);
     $('#loadGame').click(load);
     $('#hardReset').click(hardReset);
+    $('#researchTemporal').click(temporalResearchAction);
+    $('#tinkeringAutoTrainingInc').click(trainAutoTinkeringInc);
+    $('#scavengingAutoTrainingInc').click(trainAutoScavengingInc);
     // Might go back to this
     //if (store.get("gameState") != null && confirm("Load your saved game?")) {load()}
     if (store.get("gameState") != null) {load()}
