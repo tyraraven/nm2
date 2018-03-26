@@ -20,34 +20,31 @@
     <script type="text/javascript" src="../js/store.js"> </script>
 </head>
 <body>
-<div id="mainStats" class="container-fluid border rounded border-secondary" style="display:none">
+<div id="mainStats" class="container-fluid border rounded border-secondary collapse" style="display:none">
     <span class="row">
-        <span class="col-sm-2 border border-dark">Intelligence: <span id="intelligenceValue">0</span></span>
-        <span class="col-sm-2 border border-dark" id="intelligenceCapContainer" style="display:none">Cap: <span id="intelligenceCap">0</span></span>
-        <span class="col-sm-2 border border-dark" id="intelligenceIncContainer" style="display:none">Inc/Click: <span id="intelligenceInc">0</span></span>
-        <span class="col-sm-2 border border-dark" id="intelligenceAutoIncContainer" style="display:none">Inc/Tick: <span id="intelligenceAutoInc">0</span></span>
-        <span><button id="trainAutoIntelligenceInc" class="btn-sm btn-secondary">Train (10 Temporal)</button></span>
-    </span>
-    <span class="row">
-        <span class="col-sm-2 border border-dark">Training: <span id="trainingValue" >0</span></span>
-        <span class="col-sm-2 border border-dark" id="trainingCapContainer" style="display:none">Cap: <span id="trainingCap">0</span></span>
-        <span class="col-sm-2 border border-dark" id="trainingIncContainer" style="display:none">Inc/Click: <span id="trainingInc">0</span></span>
-        <span class="col-sm-2 border border-dark" id="trainingAutoIncContainer" style="display:none">Inc/Tick: <span id="trainingAutoInc">0</span></span>
-        <span><button id="trainAutoTrainingInc" class="btn-sm btn-secondary">Train (10 Temporal)</button></span>
-    </span>
-    <span class="row" id="tinkeringStat" style="display:none">
-        <span class="col-sm-2 border border-dark">Tinkering: <span id="tinkeringValue" >0</span></span>
-        <span class="col-sm-2 border border-dark">Cap: <span id="tinkeringCap">0</span></span>
-        <span class="col-sm-2 border border-dark">Inc/Click:<span id="tinkeringInc">0</span></span>
-        <span class="col-sm-2 border border-dark" id="tinkeringAutoIncContainer">Inc/Tick: <span id="tinkeringAutoInc">0</span></span>
-        <button id="tinkeringAutoTrainingInc" class="btn-sm btn-secondary">Train (10 Temporal)</button>
-    </span>
-    <span class="row" id="scavengingStat" style="display:none">
-        <span class="col-sm-2 border border-dark">Scavenging: <span id="scavengingValue" >0</span></span>
-        <span class="col-sm-2 border border-dark">Cap: <span id="scavengingCap">0</span></span>
-        <span class="col-sm-2 border border-dark">Inc/Click: <span id="scavengingInc">0</span></span>
-        <span class="col-sm-2 border border-dark" id="scavengingAutoIncContainer">Inc/Tick: <span id="scavengingAutoInc">0</span></span>
-        <button id="scavengingAutoTrainingInc" class="btn-sm btn-secondary">Train (10 Temporal)</button>
+        <span class="col-sm border border-dark">Intelligence: <span id="intelligenceValue">0</span>
+            <span id="intelligenceCapContainer" style="display:none">/ <span id="intelligenceCap">0</span></span>
+        <span id="intelligenceIncContainer" style="display:none">   (<span id="intelligenceInc">0</span>/C)</span>
+        <span id="intelligenceAutoIncContainer" style="display:none"> (<span id="intelligenceAutoInc">0</span>/T)</span>
+        <span><button id="trainAutoIntelligenceInc" style="float: right" class="btn-sm btn-secondary">Train (10 Temporal)</button></span></span>
+
+        <span class="col-sm border border-dark">Training: <span id="trainingValue" >0</span>
+        <span id="trainingCapContainer" style="display:none">/ <span id="trainingCap">0</span></span>
+        <span id="trainingIncContainer" style="display:none"> (<span id="trainingInc">0</span>/C)</span>
+        <span id="trainingAutoIncContainer" style="display:none"> (<span id="trainingAutoInc">0</span>/T)</span>
+        <span><button id="trainAutoTrainingInc" style="float: right" class="btn-sm btn-secondary">Train (10 Temporal)</button></span></span>
+
+        <span id="tinkeringStat" style="display:none" class="col-sm border border-dark">Tinkering: <span id="tinkeringValue" >0</span>
+        <span>/ <span id="tinkeringCap">0</span></span>
+        <span>(<span id="tinkeringInc">0</span>/C)</span>
+        <span id="tinkeringAutoIncContainer"> (<span id="tinkeringAutoInc">0</span>/T)</span>
+        <button id="tinkeringAutoTrainingInc" style="float:right" class="btn-sm btn-secondary">Train (10 Temporal)</button></span>
+
+        <span id="scavengingStat" style="display:none" class="col-sm border border-dark">Scavenging: <span id="scavengingValue" >0</span>
+        <span>/ <span id="scavengingCap">0</span></span>
+        <span > (<span id="scavengingInc">0</span>/C)</span>
+        <span id="scavengingAutoIncContainer"> (<span id="scavengingAutoInc">0</span>/T)</span>
+        <button id="scavengingAutoTrainingInc" style="float:right" class="btn-sm btn-secondary">Train (10 Temporal)</button></span>
     </span>
     <span id="deathStat" class="row" style="display:none">
         <span class="col-sm-8 border border-dark">Temporal Energy: <span id="deathValue">1</span></span>
@@ -86,15 +83,19 @@
 </div>
 <div id="combatActions" style="display:none;" class="container-fluid">
     <span class="row">
-        <span class="col-sm-3 border border-dark"><button id="basicAttack">Attack</button> Cost: <span id="basicAttackCost">150 (Training)</span></span>
+        <span class="col-sm-3 border border-dark"><button class="btn-sm btn-primary" id="basicAttack">Attack</button> Cost: <span id="basicAttackCost">150 (Training)</span></span>
             <span class="col-sm-3 border border-dark">Experience: <span id="basicAttackTNL">0/10</span>
+        </span>
+        <span class="col-sm-3 border border-dark"><button class="btn-sm btn-primary" id="basicHeal">Repair</button> Cost: <span id="basicRepairCost">150 (Inteligence)</span></span>
+            <span class="col-sm-3 border border-dark">Experience: <span id="basicHealTNL">0/10</span>
         </span>
     </span>
 </div>
 <div id="automationActions" style="display:none;" class="container-fluid">
     <button id="toggleAutomation" onClick="toggleAutomation();">TASC</button>
-    <div id="automationPanel" style="display:none">
-        <span>Seek Temporal Link: <button id="researchTemporal">Search for Temporal Anchor</button> <span id="temporalResearchValue"> 0/1000</span> (Int)
+    <div id="automationPanel" class="row" style="display:none">
+        <span class="col-sm-3 border border-dark">Seek Temporal Link: <button id="researchTemporal">Search</button> <span id="temporalResearchValue"> 0/1000</span> (Int)</span>
+        <span class="col-sm-3 border border-dark">Robot Analyst: <button id="automateInt">Create</button> <span id="automateIntValue"> 25 (Scrap) 25 (Vitae)</span><span id="automatonIntValue">Total: 0</span></span>
     </div>
 </div>
 <br><br>

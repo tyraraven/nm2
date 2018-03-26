@@ -59,6 +59,19 @@ var gs = {
     intelligenceRobot: 0,
     intelligenceRobotCap: 5,
 
+    // unleash the robots, so many robots.
+    automateIntRevealed: false,
+    automateIntCost: 25,
+    automatonsInt: 0,
+
+    automateTrainingRevealed: false,
+    automateTrainingCost: 25,
+    automatonsTraining: 0,
+
+    automateTinkeringRevealed: false,
+    automateTinkeringCost: 25,
+    automatonsTinkering: 0,
+
     // kill stats
     bossesKilled: 1,
     monstersKilled: 0,
