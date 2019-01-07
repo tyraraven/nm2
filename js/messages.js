@@ -24,7 +24,7 @@ phaseOneMessages.push('Getting up is.... difficult.  Whatever body this is, it c
 phaseOneMessages.push('Walking over to the wall, you make out a large rectangle near one end of the room, could that be... a door?');
 phaseOneMessages.push('Yes, the rectangle seems to be in the shape of a door, though you can see no obvious way to open it.  Suddenly the "door" shudders violently! A massive sound comes from the panel.');
 phaseOneMessages.push('Alarmed you try to step back, but you are still uncoordinated with this body and you stumble back to the ground.');
-phaseOneMessages.push('The door crashes open and before you stands a stark white creature, remarkably similar to yourself.  It has glowing red eyes but no device central on its chest.');
+phaseOneMessages.push('The door crashes open and before you stands a stark white creature, remarkably similar to yourself.  It has glowing red eyes but no device central on its chest. ');
 phaseOneMessages.push('The creature looks like it has been in some kind of awful battle, gashes all over its form.  Wires poke out from some of the wounds, sparking off electricity as it moves');
 phaseOneMessages.push('Suddenly the creature speaks "Cannot stop, I\'m so sorry.".  At which point the creature lurches towards you. ');
 phaseOneMessages.push('It tears into your form, smashing your limbs and tearing you apart, as the blackness starts to take you again you suddenly see a massive flash of blue light emanating from your chest.');
