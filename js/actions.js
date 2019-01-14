@@ -528,7 +528,6 @@ function runCombatRound() {
         if (mob.hp <= 0) {
             updateMainStory("The " + mob.name + " falls to the ground dead.");
             combatRewards();
-            gs.didAttack = false;
             gs.inCombat = false;
             return true;
         }
@@ -663,6 +662,7 @@ function combatRewards() {
         awardLoot('essence', mob.baseNecroEnergy);
     }
     gs.monstersKilled++;
+    gs.didAttack = false;
     checkSpecialCombatRewards();
 }
 
