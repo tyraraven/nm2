@@ -413,7 +413,7 @@ function decorateToolTips() {
 }
 
 function temporalResearchAction() {
-    alert('You put some thought into how to optimize your current workflow.');
+    updateActionFeedback('You put some thought into how to optimize your current workflow.');
     if (gs.intelligence > 0) {
         gs.temporalResearch += gs.intelligence;
         gs.intelligence = 0;
@@ -528,6 +528,7 @@ function runCombatRound() {
         if (mob.hp <= 0) {
             updateMainStory("The " + mob.name + " falls to the ground dead.");
             combatRewards();
+            gs.didAttack = false;
             gs.inCombat = false;
             return true;
         }
