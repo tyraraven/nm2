@@ -72,6 +72,10 @@ var gs = {
     automateTinkeringCost: 25,
     automatonsTinkering: 0,
 
+    automateScavengingRevealed: false,
+    automateScavengingCost: 25,
+    automatonsScavenging: 0,
+
     // kill stats
     bossesKilled: 1,
     monstersKilled: 0,
@@ -407,7 +411,7 @@ function decorateToolTips() {
     if (gs.essenceRevealed) {
        decorateCapStat('essence');
     }
-    if (gs.automationRevealed) {
+    if (gs.fRevealed) {
         decorateCapStat('temporalResearch');
     }
 }
