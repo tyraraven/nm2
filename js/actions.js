@@ -413,7 +413,7 @@ function decorateToolTips() {
 }
 
 function temporalResearchAction() {
-    alert('yes');
+    alert('You put some thought into how to optimize your current workflow.');
     if (gs.intelligence > 0) {
         gs.temporalResearch += gs.intelligence;
         gs.intelligence = 0;
