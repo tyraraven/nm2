@@ -661,8 +661,8 @@ function combatRewards() {
     if (gs.essenceRevealed) {
         awardLoot('essence', mob.baseNecroEnergy);
     }
-    gs.monstersKilled++;
     gs.didAttack = false;
+    gs.monstersKilled++;
     checkSpecialCombatRewards();
 }
 
