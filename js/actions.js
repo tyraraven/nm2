@@ -60,6 +60,8 @@ var gs = {
     intelligenceRobotCap: 5,
 
     // unleash the robots, so many robots.
+    baseRobotCost: 25,
+
     automateIntRevealed: false,
     automateIntCost: 25,
     automatonsInt: 0,
@@ -558,9 +560,7 @@ function revealStatUI(stat, actionName) {
     $('#'+actionName+'')[0].style.display="";
 }
 
-function revealAutomation() {
-    $('#automationActions')[0].style.display="block";
-}
+
 
 function trackTime() {
 
@@ -802,6 +802,32 @@ function updateActionFeedback(message) {
 function updateMainStory(message) {
     document.getElementById('mainStory').value += '\n' + message;
     $('#mainStory').scrollTop($('#mainStory')[0].scrollHeight);
+}
+
+/** Central function for building robots **/
+
+function revealAutomation() {
+    $('#automationActions')[0].style.display="block";
+    $('#automateInt').click(buildAutomaton('Int'));
+    $('#automateTraining').click(buildAutomaton('Training'));
+    $('#automateTinkering').click(buildAutomaton('Tinkering'));
+    $('#automateScavenging').click(buildAutomaton('Scavenging'));
+}
+
+function buildAutomaton(param) {
+    return function() {
+                // syour code that does something with param
+                // gs[stat] += (gs[stat+'Inc'] * gs[stat+'Mult']);
+                var currentCost = gs.baseRobotCost * (gs['automatons'+param] + 1);
+                alert(currentCost)
+                if (gs.scrap < currentCost || gs.essence < currentCost) {
+                    alert("Creating a robot costs 25 scrap and 25 essence as well as 150 tinkering");
+                } else {
+                    updateMainStory();
+                    alert( param );
+                }
+
+           };
 }
 
 function getMonster(name, hp, atk, baseScrap, baseNecroEnergy) {
