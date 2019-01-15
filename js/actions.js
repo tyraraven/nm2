@@ -46,6 +46,7 @@ var gs = {
     capFactor: 1.5,
 
     // research
+    temporalResearchRevealed: false,
     temporalResearch: 0,
     temporalResearchCap: 1000,
     temporalResearchLevel: 1,
@@ -369,8 +370,13 @@ function checkIntelligenceUnlocks () {
         updateMainStory("Thinking about all of this temporal energy you are gaining you wonder if you could somehow take some of the time you are spending training each cycle into the next cycle.");
         updateMainStory("You think it should be possible, and almost on cue a panel lights up on the side of the room, glowing the same blue color that your chest does. ");
         updateMainStory("On the panel is an interface, with multiple buttons.  These buttons seem to correspond to activities you have been doing.");
-        gs.autoIncTrainingRevealed=true;
+        gs.autoIncTrainingRevealed = true;
         revealAutoIncTraining();
+    } else if (gs.intelligence > 350 && !gs.temporalResearchRevealed) {
+        pulseStrongly();
+        updateMainStory("Looking at the panels you realize you could likely run some experiments on how your amulet works, perhaps improving it efficiently.");
+        updateMainStory("You think this will also likely lead to further research projects later on.");
+        gs.temporalResearchRevealed = true;
     }
     else if (gs.intelligence >= gs.intelligenceCap  && gs.capRaiseRevealed) {
         gs.intelligenceCap = Math.round(gs.intelligenceCap = gs.intelligenceCap * gs.capFactor);
@@ -413,20 +419,22 @@ function decorateToolTips() {
     if (gs.essenceRevealed) {
        decorateCapStat('essence');
     }
-    if (gs.fRevealed) {
+    if (gs.temporalResearchRevealed) {
         decorateCapStat('temporalResearch');
     }
 }
 
 function temporalResearchAction() {
-    updateActionFeedback('You put some thought into how to optimize your current workflow.');
-    if (gs.intelligence > 0) {
-        gs.temporalResearch += gs.intelligence;
-        gs.intelligence = 0;
-        if (gs.temporalResearch > gs.temporalResearchCap) {
-            gs.temporalResearch = gs.temporalResearchCap;
+    if (gs.temporalResearchRevealed) {} {
+        updateActionFeedback('You put some thought into how to optimize your current workflow.');
+        if (gs.intelligence > 0) {
+            gs.temporalResearch += gs.intelligence;
+            gs.intelligence = 0;
+            if (gs.temporalResearch > gs.temporalResearchCap) {
+                gs.temporalResearch = gs.temporalResearchCap;
+            }
+            trackTime();
         }
-        trackTime();
     }
     return false;
 }
@@ -823,7 +831,7 @@ function buildAutomaton(param) {
                 if (gs.scrap < currentCost || gs.essence < currentCost) {
                     alert("Creating a robot costs 25 scrap and 25 essence as well as 150 tinkering");
                 } else {
-                    updateMainStory();
+                    updateMainStory('Using the scrap you have lying around and the life force of the creatures you have been killing you manage to cobble together a robot.  Once the creature is completed you touch it with your amulet and bind it in time to you');
                     alert( param );
                 }
 
