@@ -1,5 +1,5 @@
 // Version number
-var versionNumber = '0.32.31.8';
+var versionNumber = 'PathToSecondSpirit-Temporal-Research';
 
 // Awareness Intro Game Stat
 var isAware = true;
