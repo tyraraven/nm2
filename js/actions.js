@@ -425,7 +425,7 @@ function decorateToolTips() {
 }
 
 function temporalResearchAction() {
-    if (gs.temporalResearchRevealed) {} {
+    if (gs.temporalResearchRevealed) {
         updateActionFeedback('You put some thought into how to optimize your current workflow.');
         if (gs.intelligence > 0) {
             gs.temporalResearch += gs.intelligence;
@@ -433,9 +433,24 @@ function temporalResearchAction() {
             if (gs.temporalResearch > gs.temporalResearchCap) {
                 gs.temporalResearch = gs.temporalResearchCap;
             }
-            trackTime();
+            if (gs.temporalResearch == gs.temporalResearchCap) {
+                if (gs.temporalResearchLevel == 5) {
+                    alert('Not implemented yet, you will have to wait!')
+                } else {
+                    pulseStrongly();
+                    updateMainStory('Using the panel you find a way to optimize the temporal transference to your amulet');
+                    updateMainStory('You should now be able to harness more fo the temporal energy each time you have a time loop.');
+                    gs.deathInc++;
+                    gs.temporalResearch=0;
+                    gs.temporalResearchCap=gs.temporalResearchCap*1.5;
+                }
+            }
         }
+    } else {
+        updateActionFeedback('You try to mess with the buttons on the console a bit, but you are not quite smart enough'
+         + ' to figure out what to do yet');
     }
+    trackTime();
     return false;
 }
 
@@ -754,7 +769,8 @@ function resetPhase1() {
     resetTickMessages();
     gs.tick = 0;
 
-    gs.deaths += (1 * gs.bossesKilled);
+    // Current formula is 1 time the number of temporal upgrades times the number of spirits killed
+    gs.deaths += ((1 * gs.deathInc) * gs.bossesKilled);
     // Death based upgrades go here
     unlockDeathUpgrades();
 
