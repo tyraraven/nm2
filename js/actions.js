@@ -422,6 +422,12 @@ function decorateToolTips() {
     if (gs.temporalResearchRevealed) {
         decorateCapStat('temporalResearch');
     }
+    if (gs.automationRevealed) {
+        decorateRobot('intelligence');
+        decorateRobot('training');
+        decorateRobot('scavenging');
+        decorateRobot('tinkering');
+    }
 }
 
 function temporalResearchAction() {
@@ -463,6 +469,12 @@ function decorateStat(stat) {
     $('#'+stat+'Cap')[0].innerHTML=gs[stat+'Cap'];
     $('#'+stat+'Inc')[0].innerHTML=gs[stat+'Inc'];
     $('#'+stat+'AutoInc')[0].innerHTML=gs[stat+'AutoInc'];
+}
+
+function decorateRobot(stat) {
+    var currentCost = gs.baseRobotCost * (gs[stat+'Robot'] + 1);
+    $('#'+stat+'RobotValue')[0].innerHTML = 'Total: ' + gs[stat+'Robot'];
+    $('#'+stat+'RobotCost')[0].innerHTML = currentCost + '(Scrap) ' + currentCost + ' (Vitae) ';
 }
 
 function trainPhase1() {
@@ -535,6 +547,15 @@ function autoIncStat(stat) {
     }
 }
 
+function robotClicks(stat) {
+    if (gs[stat+'Robot'] > 0) {} {
+        gs[stat] += (gs[stat+'Inc'] * gs[stat+'Mult']) * gs[stat+'Robot'];
+        if (gs[stat] > gs[stat+'Cap']) {
+            gs[stat] = gs[stat+'Cap'];
+        }
+    }
+}
+
 function basicAttackClick() {
     if (gs.training > gs.basicAttackCost) {
         if (!gs.inCombat) {
@@ -592,6 +613,12 @@ function trackTime() {
     autoIncStat('intelligence');
     autoIncStat('tinkering');
     autoIncStat('scavenging');
+
+    // robots!
+    robotClicks('intelligence');
+    robotClicks('training');
+    robotClicks('scavenging');
+    robotClicks('tinkering');
 
     // Check for stat unlocks!
     checkIntelligenceUnlocks()
@@ -832,20 +859,27 @@ function updateMainStory(message) {
 
 function revealAutomation() {
     $('#automationActions')[0].style.display="block";
-    $('#automateInt').click(buildAutomaton('Int'));
-    $('#automateTraining').click(buildAutomaton('Training'));
-    $('#automateTinkering').click(buildAutomaton('Tinkering'));
-    $('#automateScavenging').click(buildAutomaton('Scavenging'));
+    $('#automateInt').click(buildAutomaton('intelligence'));
+    $('#automateTraining').click(buildAutomaton('training'));
+    $('#automateTinkering').click(buildAutomaton('tinkering'));
+    $('#automateScavenging').click(buildAutomaton('scavenging'));
 }
 
 function buildAutomaton(param) {
     return function() {
-                var currentCost = gs.baseRobotCost * (gs['automatons'+param] + 1);
+                var currentCost = gs.baseRobotCost * (gs[param+'Robot'] + 1);
                 if (gs.scrap < currentCost || gs.essence < currentCost || gs.tinkering < 150) {
-                    alert("Creating a robot costs 25 scrap and 25 essence as well as 150 tinkering");
-                } else {
+                    alert("Creating a " + param + " robot costs 25 scrap and 25 essence as well as 150 tinkering");
+                } else if (gs[param+'Robot'] < 5) {
                     updateMainStory('Using the scrap you have lying around and the life force of the creatures you have been killing you manage to cobble together a robot.  Once the creature is completed you touch it with your amulet and bind it in time to you');
-                    alert( param );
+                    updateMainStory('The robot will automatically copy your action when you focus on a specific skill, endlessly performing it as well as you in a loop.');
+                    gs[param+'Robot']++;
+                    gs.scrap -= currentCost;
+                    gs.essence -= currentCost;
+                    gs.tinkering-=150;
+                    trackTime();
+                } else {
+                    alert("You simply cannot handle linking any more robots of this kind presently.  Perhaps there is a way to increase your ability to anchor things in time?");
                 }
 
            };
