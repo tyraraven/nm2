@@ -1,5 +1,5 @@
 // Version number
-var versionNumber = 'PathToSecondSpirit-Temporal-Research';
+var versionNumber = 'RobotsAreFriends';
 
 // Awareness Intro Game Stat
 var isAware = true;
