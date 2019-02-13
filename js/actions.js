@@ -840,11 +840,8 @@ function revealAutomation() {
 
 function buildAutomaton(param) {
     return function() {
-                // syour code that does something with param
-                // gs[stat] += (gs[stat+'Inc'] * gs[stat+'Mult']);
                 var currentCost = gs.baseRobotCost * (gs['automatons'+param] + 1);
-                alert(currentCost)
-                if (gs.scrap < currentCost || gs.essence < currentCost) {
+                if (gs.scrap < currentCost || gs.essence < currentCost || gs.tinkering < 150) {
                     alert("Creating a robot costs 25 scrap and 25 essence as well as 150 tinkering");
                 } else {
                     updateMainStory('Using the scrap you have lying around and the life force of the creatures you have been killing you manage to cobble together a robot.  Once the creature is completed you touch it with your amulet and bind it in time to you');
