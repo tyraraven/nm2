@@ -284,7 +284,7 @@ function checkTinkeringUnlocks() {
         pulseGently();
     } else if (gs.tinkering > 25 && !gs.automationRevealed) {
         gs.automationRevealed=true;
-        updateMainStory("Looking at all of the scrap lying around you think that you might be able to get some of the robots working again if you had enough Vitae and scrap.");
+        updateMainStory("Looking at all of the scrap lying around you think that you might be able to get some of the robots working again if you had enough scrap and something to power them.");
         pulseStrongly();
         updateMainStory("Suddenly the wall on the opposite side of the door turns translucent, and you see images of yourself doing various tasks. ");
         updateMainStory('You hear what you think is your own human voice coming from the amulet: "Temporal Automation is the key to me accomplishing my goal.  If I study a task long enough I should be able to create a robot to perform it for me in a micro time loop."');
