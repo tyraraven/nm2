@@ -1,5 +1,5 @@
 // Version number
-var versionNumber = 'RobotsAreFriends';
+var versionNumber = 'Repair1.0';
 
 // Awareness Intro Game Stat
 var isAware = true;
