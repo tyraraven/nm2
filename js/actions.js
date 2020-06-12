@@ -557,11 +557,12 @@ function robotClicks(stat) {
 }
 
 function basicAttackClick() {
-    if (gs.training > gs.basicAttackCost) {
+    if (gs.training >= gs.basicAttackCost) {
         if (!gs.inCombat) {
             updateActionFeedback("You practice your cool attack moves.");
+        } else {
+            gs.didAttack=true;
         }
-        gs.didAttack=true;
         gs.training -=gs.basicAttackCost;
         gs.basicAttackExp++;
         trackTime();
@@ -586,7 +587,6 @@ function runCombatRound() {
     updateMainStory("The " + mob.name + " swings at you dealing " + mob.atk + " damage!");
     player.hp -= mob.atk;
     if (player.hp <= 0) {
-        updateMainStory("You have been slain by " + mob.name);
         gs.inCombat = false;
         return false;
     }
@@ -634,6 +634,7 @@ function trackTime() {
         updateCombatInfo();
         if (!runCombatRound()) {
             resetPhase1();
+            updateMainStory("You have been slain by " + mob.name);
             clearCombatInfo();
         }
     } else if (gs.firstCombatWon && gs.tick > 15) {
@@ -643,10 +644,10 @@ function trackTime() {
     // Post player driven actions, does something happen to them?
     checkFirstCombat();
     if (gs.tick >= 50) {
+        resetPhase1();
         updateMainStory("Another spirit comes through the door of the room, eyes burning a fearsome red with ominous black streaks running through them.");
         updateMainStory("Almost too fast to see, it strikes at you piercing your chest.  In horror you watch the blackness seep from its eyes at head towards you engulfing your body from within.");
         gs.inCombat=false;
-        resetPhase1();
     }
 
     // This is now centralized and will be called each tick
@@ -677,14 +678,14 @@ function checkFirstCombat() {
             // Check stats/abilities either overcome creature and goto phase 2, or reset allowing level up.
             if (!gs.combatSkillsRevealed) {
                 if (gs.intelligence < 100 && gs.training < 100) {
+                    resetPhase1();
                     updateMainStory('The creature bursts into the room, and finishes you off just like before.');
-                    resetPhase1();
                 } else if (gs.intelligence < 100) {
-                    updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.');
                     resetPhase1();
+                    updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.  If only you had spent more time thinking this cycle.');
                 } else if (gs.training < 100) {
-                    updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.');
                     resetPhase1();
+                    updateMainStory('The creature bursts into the room, and starts to come after you.  You however anticipate its attack patterns and hold out for a while.  Unfortunately you do not have the stamina to fight back and eventually the creature wears you down and kills you.  If only you had spent more time training this cycle');
                 }
             }
 
@@ -789,6 +790,9 @@ function levelUpCombatSkills() {
 
 function resetPhase1() {
 
+    //Clear the main story text
+    clearMainStory();
+
     // Scores
     resetAbilityScores();
 
@@ -848,6 +852,10 @@ function resetAbilityScores() {
 
 function updateActionFeedback(message) {
     document.getElementById('actionFeedback').value = message;
+}
+
+function clearMainStory() {
+    document.getElementById('mainStory').value = '';
 }
 
 function updateMainStory(message) {
