@@ -29,6 +29,7 @@ var gs = {
     scrapRevealed: false,
     essenceRevealed: false,
     automationRevealed: false,
+    repairRevealed: false,
 
     // scrap
     scrap: 0,
@@ -298,7 +299,14 @@ function checkTinkeringUnlocks() {
         revealAutomation();
         updateMainStory("The panel has an angry red message across the top of it: Temporal Emergency Event Detected, micro loops have collapsed and are unrecoverable, do you want to clear temporal pointers?");
         updateMainStory("With little real idea of what's going on you press what you think is the confirmation button.  Blue light flashes in the room, and now the screen is replaced with a interface labeled 'Temporal Automation System Core (TASC)'");
-    } else if (gs.tinkering >= gs.tinkeringCap) {
+    } else if (gs.tinkering > 180 && !gs.repairRevealed) {
+        gs.repairRevealed=true;
+        updateMainStory("You realize that with your tinkering skills you might be able to make combat repairs of this strange body");
+        pulseStrongly();
+        updateMainStory("You know its going to take practice, but might help you survive what is coming.");
+        revealRepair();
+    }
+    else if (gs.tinkering >= gs.tinkeringCap) {
                     gs.tinkeringCap = Math.round(gs.tinkeringCap = gs.tinkeringCap * gs.capFactor);
                     gs.tinkering = 0;
                     updateMainStory("Suddenly you realize everything up until now that you have created was just garbage.  Armed with this knowledge you start again determined to do better.");
@@ -580,11 +588,13 @@ function repairClick() {
     if (gs.tinkering >= gs.repairCost) {
         if (!gs.inCombat) {
             updateActionFeedback("You you take a moment and fix your body with your tinkering skills.");
+        } else {
+            updateMainStory("You repair for " + gs.repairPower + ".");
         }
 
         gs.tinkering -=gs.repairCost;
         gs.repairExp++;
-        player.hp != gs.repairPower;
+        player.hp += gs.repairPower;
         if (player.hp > player.totalHp) {
             player.hp = player.totalHp;
         }
@@ -782,7 +792,12 @@ function checkSpecialCombatRewards() {
 
 function revealCombatSkills() {
     $('#combatActions')[0].style.display="inline";
+    $('#basicAttackContainer')[0].style.display="inline";
     $('#enemyStats')[0].style.display="block";
+}
+
+function revealRepair() {
+    $('#repairContainer')[0].style.display="inline";
 }
 
 function updateCombatInfo() {
@@ -1006,6 +1021,9 @@ function processUnlocks() {
     }
     if (gs.automationRevealed) {
         revealAutomation();
+    }
+    if (gs.repairRevealed) {
+        revealRepair();
     }
 }
 
