@@ -121,7 +121,11 @@ var gs = {
     didAttack: false,
     basicAttackExp: 0,
     basicAttackLevelUpCost: 10,
-    basicAttackCost: 150
+    basicAttackCost: 150,
+    repairExp: 0,
+    repairLevelUpCost: 10,
+    repairCost: 150,
+    repairPower: 5
 };
 
 
@@ -572,6 +576,25 @@ function basicAttackClick() {
     }
 }
 
+function repairClick() {
+    if (gs.tinkering >= gs.repairCost) {
+        if (!gs.inCombat) {
+            updateActionFeedback("You you take a moment and fix your body with your tinkering skills.");
+        }
+
+        gs.tinkering -=gs.repairCost;
+        gs.repairExp++;
+        player.hp != gs.repairPower;
+        if (player.hp > player.totalHp) {
+            player.hp = player.totalHp;
+        }
+        trackTime();
+    } else {
+        alert('You must have at least ' + gs.repairCost + ' tinkering to repair');
+        return false;
+    }
+}
+
 function runCombatRound() {
     if (gs.didAttack) {
         updateMainStory("You swing at the " + mob.name + " hitting it with a weak attack for " + player.atk + " damage.");
@@ -781,10 +804,18 @@ function clearCombatInfo() {
 function levelUpCombatSkills() {
     if (gs.basicAttackExp >= gs.basicAttackLevelUpCost) {
         pulseGently();
-        updateMainStory("You have become more efficient at attacking! (Action Cost Decrease/Level Up Increase)");
+        updateMainStory("You have become more efficient at attacking! (Cost-)");
         gs.basicAttackLevelUpCost = Math.round(gs.basicAttackLevelUpCost *= 1.5);
         gs.basicAttackExp = 0;
         gs.basicAttackCost = Math.round(gs.basicAttackCost *= .9);
+    }
+    if (gs.repairExp >= gs.repairLevelUpCost) {
+        pulseGently();
+        updateMainStory("You have become more efficient at repairing! (Cost-/Power+)");
+        gs.repairLevelUpCost = Math.round(gs.repairLevelUpCost *= 1.5);
+        gs.repairExp = 0;
+        gs.repairCost = Math.round(gs.repairCost *= .9);
+        gs.repairPower = Math.round(gs.repairPower *= 1.2);
     }
 }
 
@@ -993,6 +1024,7 @@ $( document ).ready(function() {
     $('#scavenge').click(scavengingAction);
     $('#versionNumber')[0].innerHTML = 'Version: ' + versionNumber;
     $('#basicAttack').click(basicAttackClick);
+    $('#repair').click(repairClick);
     $('#saveGame').click(save);
     $('#loadGame').click(load);
     $('#hardReset').click(hardReset);
