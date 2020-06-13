@@ -133,6 +133,7 @@ var gs = {
 
 var shardBosses = [];
 shardBosses.push(["Strange Creature", 10, 5, 1, 0]);
+shardBosses.push(["Corrupted Spirit (Not Finished)", 1500, 15, 10, 10]);
 
 // Random Encounters Phase1
 var randomEncountersArray = [];
@@ -331,7 +332,7 @@ function checkScavengingUnlocks() {
         updateMainStory("");
         updateMainStory('Now your amulet emits a voice: "Storage Room online, materials recognized as useful will automatically transfer via temporal interface."');
         revealScrap();
-    } else if (gs.scavenging > 75 && !gs.essenceRevealed) {
+    } else if (gs.scavenging > 175 && !gs.essenceRevealed) {
         gs.essenceRevealed = true;
         updateMainStory('One of the non robotic monsters corpses shudders and twitches on the floor.');
         updateMainStory('Suddenly you think to yourself, "Why am I letting this Life Essence go to waste, I should be draining my foes after I kill them"');
@@ -419,6 +420,10 @@ function decorateToolTips() {
     if (gs.combatSkillsRevealed) {
         $('#basicAttackCost')[0].innerHTML=gs.basicAttackCost;
         $('#basicAttackTNL')[0].innerHTML=gs.basicAttackExp + '/' + gs.basicAttackLevelUpCost;
+    }
+    if (gs.repairRevealed) {
+        $('#repairCost')[0].innerHTML=gs.repairCost;
+        $('#repairTNL')[0].innerHTML=gs.repairExp + '/' + gs.repairLevelUpCost;
     }
     if (gs.firstCombatUnlocksRevealed) {
         //$('#tinkeringValue')[0].innerHTML = gs.tinkering;
@@ -670,17 +675,12 @@ function trackTime() {
             updateMainStory("You have been slain by " + mob.name);
             clearCombatInfo();
         }
-    } else if (gs.firstCombatWon && gs.tick > 15) {
+    } else if (gs.firstCombatWon && (gs.tick > 15 && gs.tick < 50)) {
         randomEncounters();
-    }
-
-    // Post player driven actions, does something happen to them?
-    checkFirstCombat();
-    if (gs.tick >= 50) {
-        resetPhase1();
+    } else if (gs.firstCombatWon && gs.tick >= 50) {
         updateMainStory("Another spirit comes through the door of the room, eyes burning a fearsome red with ominous black streaks running through them.");
-        updateMainStory("Almost too fast to see, it strikes at you piercing your chest.  In horror you watch the blackness seep from its eyes at head towards you engulfing your body from within.");
-        gs.inCombat=false;
+        mob = getMonster(...shardBosses[1]);
+        inCombat=true;
     }
 
     // This is now centralized and will be called each tick
