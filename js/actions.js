@@ -372,23 +372,24 @@ function checkIntelligenceUnlocks () {
     if (!gs.hasAwardedIntelligenceIncCap && gs.intelligence >= 10 && gs.intelligenceInc < 10) {
         gs.intelligenceInc++;
         gs.hasAwardedIntelligenceIncCap = true;
-        updateActionFeedback('Thinking about your situation more you realize that the item on your chest must be somehow relaying your intellect back in time each time you die.  You wonder if you can somehow exploit that. (+1 Int per Click)');
+        updateActionFeedback("You improve your manual studying rate.");
+        updateMainStory('You begin to organize your thoughts better.');
         pulseGently();
     } else if (gs.intelligence >= 25 && !gs.capsRevealed) {
         revealCaps();
         gs.capsRevealed = true;
         pulseStrongly();
-        updateMainStory('You are starting to understand the limits of your present existence. (You can now see your ability caps statistics panel)');
+        updateMainStory('You are starting to understand the limits of your present existence.');
     } else if (gs.intelligence >= 45 && !gs.incRevealed) {
         gs.incRevealed = true;
         revealInc();
         console;
         pulseStrongly();
-        updateMainStory('You now know that you are growing faster as you loop through the cycle, and can gauge its rate of growth! (You can now see how fast your ability scores are going up per click in the tooltips)');
+        updateMainStory('You have spent some time pondering your condition and now know how much progress you can make through your direct efforts.');
     } else if (gs.intelligence >= 75 && !gs.capRaiseRevealed) {
         pulseStrongly();
         updateMainStory('There is a limit to your abilities, but is it a hard limit?  You think if you were to spend a large amount of effort when you are at your limit, you might be able to train yourself to further heights in the next cycle.');
-        updateMainStory('(If you are at cap, and you press the training button again you will consume all of your currently banked attribute, but in exchange your cap will increase.)');
+        updateMainStory('(If you are at cap for an ability, and you press the appropriate button again you will consume all of your currently banked attribute, but in exchange your cap will increase.)');
         gs.capRaiseRevealed = true;
     } else if (gs.intelligence > 150 && gs.deathStatRevealed && !gs.autoIncTrainingRevealed) {
         pulseStrongly();
@@ -521,7 +522,8 @@ function checkTrainingUnlocks () {
         if (!gs.hasAwardedTrainingIncCap && gs.training >= 10 && gs.trainingInc < 10) {
             gs.trainingInc++;
             gs.hasAwardedTrainingIncCap = true;
-            updateActionFeedback('You work on controlling your various limbs, trying to use it as effectively as the your own body. (+1 Training per click)');
+            updateActionFeedback('You become more efficient at manual training.');
+            updateMainStory('You work on controlling your various limbs in a coordinated fashion.');
             pulseGently();
         } else if (!gs.combatRevealed && gs.training > 50) {
             gs.combatRevealed = true;
@@ -531,9 +533,13 @@ function checkTrainingUnlocks () {
         } else if (!gs.hpTrainButtonRevealed && gs.training > 85) {
             revealHpTrainButton();
             gs.hpTrainButtonRevealed = true;
+            updateMainStory('As you train you realize you might be able to expend some of energy to work on making this body stronger.');
+            pulseGently();
         } else if (!gs.atkTrainButtonRevealed && gs.training > 125) {
             revealAtkTrainButton();
             gs.atkTrainButtonRevealed = true;
+            updateMainStory('Growing more used to this form you think you can work on adding more of the shells weight to your strikes, raising your combat effectiveness.');
+            pulseGently();
         } else if (gs.training >= gs.trainingCap && gs.capRaiseRevealed) {
             gs.trainingCap = Math.round(trainingCap = gs.trainingCap * gs.capFactor);
             gs.training = 0;
@@ -635,11 +641,15 @@ function runCombatRound() {
         }
     }
     gs.didAttack = false;
-    updateMainStory("The " + mob.name + " swings at you dealing " + mob.atk + " damage!");
+
     player.hp -= mob.atk;
     if (player.hp <= 0) {
         gs.inCombat = false;
+        resetPhase1();
+        updateMainStory("The " + mob.name + " swings at you dealing " + mob.atk + " damage killing you!");
         return false;
+    } else {
+        updateMainStory("The " + mob.name + " swings at you dealing " + mob.atk + " damage!");
     }
     return true;
 
@@ -676,8 +686,6 @@ function trackTime() {
     if (gs.inCombat) {
         updateCombatInfo();
         if (!runCombatRound()) {
-            resetPhase1();
-            updateMainStory("You have been slain by " + mob.name);
             clearCombatInfo();
         }
     } else if (!gs.firstCombatWon && gs.tick >= 10) {
@@ -720,7 +728,13 @@ function checkFirstCombat() {
             if (!gs.combatSkillsRevealed) {
                 if (gs.intelligence < 100 && gs.training < 100) {
                     resetPhase1();
-                    updateMainStory('The creature bursts into the room, and finishes you off just like before.');
+                    if (gs.deaths == 1) {
+                        updateMainStory('The creature bursts into the room and immediately attacks you, killing you savagely.');
+                        updateMainStory('As you die, you see a blue flash of light and then feel your consciousness begin to stream out of its shell, and backwards in time.');
+                        updateMainStory('You watch the events play out before you in reverse and realize you can approach this much more efficiently if you tried. ');
+                    } else {
+                        updateMainStory('The creature bursts into the room, and finishes you off just like before.');
+                    }
                 } else if (gs.intelligence < 100) {
                     resetPhase1();
                     updateMainStory('The creature bursts into the room, and comes for you.  You are able to dodge its attacks initially, but it is more seasoned than you and eventually corners and kills you.  If only you had spent more time thinking this cycle.');
@@ -857,7 +871,9 @@ function resetPhase1() {
     // Current formula is 1 time the number of temporal upgrades times the number of spirits killed
     gs.deaths += ((1 * gs.deathInc) * gs.bossesKilled);
     // Death based upgrades go here
-    unlockDeathUpgrades();
+    if (!gs.deathStatRevealed && gs.deaths >= 3) {
+        unlockDeathUpgrades();
+    }
 
     decorateToolTips();
     updateActionFeedback('You have died!  The item on your chest flashes a brilliant blue and you stream back to the start of your loop!');
@@ -879,12 +895,10 @@ function revealDeathStat() {
 }
 
 function unlockDeathUpgrades() {
-    if (!gs.deathStatRevealed && gs.deaths >= 10) {
-        updateMainStory('As you die you notice that the pulse coming from your chest is getting a bit stronger each time.  When you come back to you notice that some of the blue light that has come from it is absorbed back in, causing the glow to become slightly stronger over the cycles.  You are not sure what use this is for you, bit you think you can estimate how large the effect is from here onward.');
-        pulseStrongly();
-        gs.deathStatRevealed=true;
-        revealDeathStat();
-    }
+    updateMainStory('As you die you notice that the pulse coming from your chest is getting a bit stronger each time.  When you come back to you notice that some of the blue light that has come from it is absorbed back in, causing the glow to become slightly stronger over the cycles.  You are not sure what use this is for you, bit you think you can estimate how large the effect is from here onward.');
+    pulseStrongly();
+    gs.deathStatRevealed=true;
+    revealDeathStat();
 }
 
 function resetTickMessages() {
