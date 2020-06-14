@@ -62,22 +62,18 @@ var gs = {
     intelligenceRobotCap: 5,
 
     // unleash the robots, so many robots.
-    baseRobotCost: 25,
+    baseRobotCost: 10,
 
     automateIntRevealed: false,
-    automateIntCost: 25,
     automatonsInt: 0,
 
     automateTrainingRevealed: false,
-    automateTrainingCost: 25,
     automatonsTraining: 0,
 
     automateTinkeringRevealed: false,
-    automateTinkeringCost: 25,
     automatonsTinkering: 0,
 
     automateScavengingRevealed: false,
-    automateScavengingCost: 25,
     automatonsScavenging: 0,
 
     // kill stats
@@ -680,7 +676,7 @@ function trackTime() {
     } else if (gs.firstCombatWon && gs.tick >= 50) {
         updateMainStory("Another spirit comes through the door of the room, eyes burning a fearsome red with ominous black streaks running through them.");
         mob = getMonster(...shardBosses[1]);
-        inCombat=true;
+        gs.inCombat=true;
     }
 
     // This is now centralized and will be called each tick
@@ -923,7 +919,7 @@ function buildAutomaton(param) {
     return function() {
                 var currentCost = gs.baseRobotCost * (gs[param+'Robot'] + 1);
                 if (gs.scrap < currentCost || gs.essence < currentCost || gs.tinkering < 150) {
-                    alert("Creating a " + param + " robot costs 25 scrap and 25 essence as well as 150 tinkering");
+                    alert("Creating a " + param + " robot costs " + currentCost + " scrap and " + currentCost + " essence as well as 150 tinkering");
                 } else if (gs[param+'Robot'] < 5) {
                     updateMainStory('Using the scrap you have lying around and the life force of the creatures you have been killing you manage to cobble together a robot.  Once the creature is completed you touch it with your amulet and bind it in time to you');
                     updateMainStory('The robot will automatically copy your action when you focus on a specific skill, endlessly performing it as well as you in a loop.');
