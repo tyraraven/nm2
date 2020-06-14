@@ -265,14 +265,24 @@ function lookPhase1() {
     trackTime();
 }
 
+function reveal() {
+ for (i = 0; i < arguments.length; i++) {
+    $('#' + arguments[i])[0].style.display="";
+  }
+}
+
+function revealInline() {
+ for (i = 0; i < arguments.length; i++) {
+    $('#' + arguments[i])[0].style.display="inline";
+  }
+}
+
 function revealCaps() {
-    $('#intelligenceCapContainer')[0].style.display="inline";
-    $('#trainingCapContainer')[0].style.display="inline";
+    reveal('intelligenceCapContainer', 'trainingCapContainer');
 }
 
 function revealInc() {
-    $('#intelligenceIncContainer')[0].style.display="inline";
-    $('#trainingIncContainer')[0].style.display="inline";
+    reveal('intelligenceIncContainer','trainingIncContainer');
 }
 
 function checkTinkeringUnlocks() {
@@ -351,11 +361,11 @@ function checkScavengingUnlocks() {
 }
 
 function revealEssence() {
-    $('#essenceStats')[0].style.display="inline";
+    reveal('essenceStats');
 }
 
 function revealScrap() {
-    $('#scrapStats')[0].style.display="inline";
+    reveal('scrapStats');
 }
 
 function checkIntelligenceUnlocks () {
@@ -402,8 +412,7 @@ function checkIntelligenceUnlocks () {
 }
 
 function revealAutoIncTraining() {
-    $('#intelligenceAutoIncContainer')[0].style.display="inline";
-    $('#trainingAutoIncContainer')[0].style.display="inline";
+    reveal('intelligenceAutoIncContainer', 'trainingAutoIncContainer');
     $('#trainAutoIntelligenceInc').click(trainAutoIntInc);
     $('#trainAutoTrainingInc').click(trainAutoTrainingInc);
 }
@@ -420,11 +429,12 @@ function decorateToolTips() {
         $('#deathValue')[0].innerHTML=gs.deaths;
     }
     if (gs.combatSkillsRevealed) {
-        $('#basicAttackCost')[0].innerHTML=gs.basicAttackCost;
+        $('#basicAttack')[0].title=gs.basicAttackCost + ' Training';
         $('#basicAttackTNL')[0].innerHTML=gs.basicAttackExp + '/' + gs.basicAttackLevelUpCost;
     }
     if (gs.repairRevealed) {
-        $('#repairCost')[0].innerHTML=gs.repairCost;
+        $('#repair')[0].title=gs.repairCost + ' Tinkering';
+        //$('#repairCost')[0].innerHTML=gs.repairCost;
         $('#repairTNL')[0].innerHTML=gs.repairExp + '/' + gs.repairLevelUpCost;
     }
     if (gs.firstCombatUnlocksRevealed) {
@@ -504,7 +514,7 @@ function trainPhase1() {
 }
 
 function revealCombat() {
-    $('#combat')[0].style.display="block";
+    reveal('combat');
 }
 
 function checkTrainingUnlocks () {
@@ -533,12 +543,12 @@ function checkTrainingUnlocks () {
 }
 
 function revealHpTrainButton() {
-    $('#trainHp')[0].style.display="inline";
+    reveal('trainHp');
     $('#trainHp').click(trainHp);
 }
 
 function revealAtkTrainButton() {
-    $('#trainAtk')[0].style.display="inline";
+    reveal('trainAtk');
     $('#trainAtk').click(trainAtk);
 }
 
@@ -636,16 +646,8 @@ function runCombatRound() {
 }
 
 function revealBoss1Stats() {
-        revealStatUI('tinkering','tinker');
-        revealStatUI('scavenging','scavenge');
+        reveal('tinkeringStat','tinker','scavengingStat','scavenge');
 }
-
-function revealStatUI(stat, actionName) {
-    $('#'+stat+'Stat')[0].style.display="";
-    $('#'+actionName+'')[0].style.display="";
-}
-
-
 
 function trackTime() {
 
@@ -794,13 +796,13 @@ function checkSpecialCombatRewards() {
 }
 
 function revealCombatSkills() {
-    $('#combatActions')[0].style.display="inline";
-    $('#basicAttackContainer')[0].style.display="inline";
-    $('#enemyStats')[0].style.display="block";
+
+    revealInline('combatActions');
+    reveal('enemyStats', 'basicAttackContainer');
 }
 
 function revealRepair() {
-    $('#repairContainer')[0].style.display="inline";
+    reveal('repairContainer');
 }
 
 function updateCombatInfo() {
@@ -870,7 +872,7 @@ function resetPhase1() {
 };
 
 function revealDeathStat() {
-    $('#deathStat')[0].style.display="";
+   reveal('deathStat');
 }
 
 function unlockDeathUpgrades() {
@@ -915,7 +917,7 @@ function updateMainStory(message) {
 /** Central function for building robots **/
 
 function revealAutomation() {
-    $('#automationActions')[0].style.display="block";
+    reveal('automationActions');
     $('#automateInt').click(buildAutomaton('intelligence'));
     $('#automateTraining').click(buildAutomaton('training'));
     $('#automateTinkering').click(buildAutomaton('tinkering'));
@@ -1051,11 +1053,17 @@ $( document ).ready(function() {
     $('#tinkeringAutoTrainingInc').click(trainAutoTinkeringInc);
     $('#scavengingAutoTrainingInc').click(trainAutoScavengingInc);
 
+    // Overwrite nav-link to close when pressed again
     $(".nav-link").click(function(){
         if ($(this).hasClass('active')){
             $('#' + this.hash.substr(1).toLowerCase()).toggleClass('active');
         }
     });
+
+    //Enable Tooltips
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
     // Might go back to this
     //if (store.get("gameState") != null && confirm("Load your saved game?")) {load()}
     if (store.get("gameState") != null) {load()}
