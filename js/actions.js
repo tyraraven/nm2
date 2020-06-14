@@ -680,7 +680,10 @@ function trackTime() {
             updateMainStory("You have been slain by " + mob.name);
             clearCombatInfo();
         }
-    } else if (gs.firstCombatWon && (gs.tick > 15 && gs.tick < 50)) {
+    } else if (!gi.firstCombatWon && gs.tick >= 15) {
+        checkFirstCombat();
+    }
+    else if (gs.firstCombatWon && (gs.tick > 15 && gs.tick < 50)) {
         randomEncounters();
     } else if (gs.firstCombatWon && gs.tick >= 50) {
         updateMainStory("Another spirit comes through the door of the room, eyes burning a fearsome red with ominous black streaks running through them.");
