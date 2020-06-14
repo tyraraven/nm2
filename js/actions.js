@@ -1,5 +1,5 @@
 // Version number
-var versionNumber = 'Repair1.0';
+var versionNumber = 'Balancing';
 
 // Awareness Intro Game Stat
 var isAware = true;
@@ -44,7 +44,7 @@ var gs = {
     essenceCap: 50,
 
     // death
-    deaths: 1,
+    deaths: 0,
     deathInc: 1,
 
     // Base factors
@@ -398,10 +398,11 @@ function checkIntelligenceUnlocks () {
         updateMainStory("On the panel is an interface, with multiple buttons.  These buttons seem to correspond to activities you have been doing.");
         gs.autoIncTrainingRevealed = true;
         revealAutoIncTraining();
-    } else if (gs.intelligence > 350 && !gs.temporalResearchRevealed) {
+    } else if (gs.intelligence > 350 && !gs.temporalResearchRevealed &&gs.automationRevealed) {
         pulseStrongly();
         updateMainStory("Looking at the panels you realize you could likely run some experiments on how your amulet works, perhaps improving it efficiently.");
-        updateMainStory("You think this will also likely lead to further research projects later on.");
+        updateMainStory("This will also likely lead to further research projects later on.");
+        updateMainStory("A new research project is available in the TASC.  You can dump resources into it and have progress carry over from cycle to cycle.");
         gs.temporalResearchRevealed = true;
     }
     else if (gs.intelligence >= gs.intelligenceCap  && gs.capRaiseRevealed) {
@@ -471,7 +472,7 @@ function temporalResearchAction() {
             }
             if (gs.temporalResearch == gs.temporalResearchCap) {
                 if (gs.temporalResearchLevel == 5) {
-                    alert('Not implemented yet, you will have to wait!')
+                    updateMainStory('You try to further optimize the amulet, but can\'t seem to find proper materials.  This was a waste of your time');
                 } else {
                     pulseStrongly();
                     updateMainStory('Using the panel you find a way to optimize the temporal transference to your amulet');
@@ -482,12 +483,13 @@ function temporalResearchAction() {
                 }
             }
         }
+        trackTime();
     } else {
         updateActionFeedback('You try to mess with the buttons on the console a bit, but you are not quite smart enough'
          + ' to figure out what to do yet');
     }
-    trackTime();
-    return false;
+
+
 }
 
 function decorateCapStat(stat) {
@@ -996,6 +998,8 @@ function load() {
     decorateToolTips();
 
     updateActionFeedback("Game loaded....");
+    clearMainStory();
+    decorateToolTips();
     return true;
 }
 
@@ -1003,6 +1007,7 @@ function hardReset() {
     if (confirm("Are you sure, this will completely erase your save and you will need to start over!")) {
         store.clearAll()
     };
+    location.reload();
 }
 
 function processUnlocks() {
