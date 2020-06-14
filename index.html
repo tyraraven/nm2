@@ -25,52 +25,88 @@
         <span class="col-sm border border-dark" id="actionFeedback" style="display:none;">You do nothing.</span>
         <span id="tickContainer" style="display:none;" class="col-sm-1 border border-dark">Tick: <span id="tickValue">0</span></span>
     </span>
-    <span class="row">
-        <textarea class="form-control" rows="15" id="mainStory" style="border: solid;">You awake in complete and total darkness with no idea who you are or how you got there.</textarea>
-    </span>
 </div>
-<div id="mainStats" class="container-fluid border rounded border-secondary collapse" style="display:none">
-    <span class="row justify-content-center">
-        Resources
-    </span>
+<div>
     <span class="row">
-        <span class="col-sm border border-dark">Intelligence: <span id="intelligenceValue">0</span>
-            <span id="intelligenceCapContainer" style="display:none">/ <span id="intelligenceCap">0</span></span>
-        <span id="intelligenceIncContainer" style="display:none">   (<span id="intelligenceInc">0</span>/C)</span>
-        <span id="intelligenceAutoIncContainer" style="display:none"> (<span id="intelligenceAutoInc">0</span>/T)
-            <span><button id="trainAutoIntelligenceInc" style="float: right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy ">Infuse</button></span></span>
+        <span class="col-sm-4 border border-dark1">
+            <textarea class="form-control" rows="15" id="mainStory" style="border: solid;">You awake in complete and total darkness with no idea who you are or how you got there.</textarea>
         </span>
-        <span class="col-sm border border-dark">Training: <span id="trainingValue" >0</span>
-        <span id="trainingCapContainer" style="display:none">/ <span id="trainingCap">0</span></span>
-        <span id="trainingIncContainer" style="display:none"> (<span id="trainingInc">0</span>/C)</span>
-        <span id="trainingAutoIncContainer" style="display:none"> (<span id="trainingAutoInc">0</span>/T)
-            <span><button id="trainAutoTrainingInc" style="float: right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Infuse</button></span></span>
-        </span>
-        <span id="tinkeringStat" style="display:none" class="col-sm border border-dark">Tinkering: <span id="tinkeringValue" >0</span>
-        <span>/ <span id="tinkeringCap">0</span></span>
-        <span>(<span id="tinkeringInc">0</span>/C)</span>
-        <span id="tinkeringAutoIncContainer"> (<span id="tinkeringAutoInc">0</span>/T)</span>
-        <button id="tinkeringAutoTrainingInc" style="float:right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Train</button></span>
+        <span class="col-sm border border-dark1">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" id="mainStatsTab" style="display:none">
+                    <a class="nav-link active" data-toggle="tab" href="#mainStats">Statistics</a>
+                </li>
+                <li class="nav-item" id="automationActions" style="display:none;">
+                    <a class="nav-link" data-toggle="tab" href="#automation">TASC</a>
+                </li>
+                <li class="nav-item" id="workshopActions" style="display:none;">
+                    <a class="nav-link" data-toggle="tab" href="#workshop">Workshop</a>
+                </li>
+            </ul>
 
-        <span id="scavengingStat" style="display:none" class="col-sm border border-dark">Scavenging: <span id="scavengingValue" >0</span>
-        <span>/ <span id="scavengingCap">0</span></span>
-        <span > (<span id="scavengingInc">0</span>/C)</span>
-        <span id="scavengingAutoIncContainer"> (<span id="scavengingAutoInc">0</span>/T)</span>
-        <button id="scavengingAutoTrainingInc" style="float:right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Train</button></span>
-    </span>
-    <span id="deathStat" class="row" style="display:none">
-        <span class="col-sm border border-dark">Temporal Energy: <span id="deathValue">1</span></span>
-    </span>
-    <span class="row justify-content-center">
-        Battle Statistics
-    </span>
-    <span id="combat" class="row" style="display:none">
-        <span class="col-sm border border-dark" id="hpContainer">Hp: <span id="hpValue">0</span> <button id="trainHp" style="display: none;" data-toggle="tooltip" data-placement="top" title="150 Training">Train</button></span>
-        <span class="col-sm border border-dark" id="atkContainer">Atk: <span id="atkValue">0</span> <button id="trainAtk" style="display: none;" data-toggle="tooltip" data-placement="top" title="150 Training">Train</button></span>
-    </span>
-    <span class="row">
-        <span id="scrapStats" class="col-sm-1 border border-dark" style="display:none">Scrap: <span id="scrapValue">0/50</span></span>
-        <span id="essenceStats" class="col-sm-1 border border-dark" style="display:none">Vitae: <span id="essenceValue">0/50</span></span>
+            <div class="tab-content">
+                <div class="tab-pane " id="automation">
+                    <span class="row" id="temporalResearchContainer" style="display:none;">
+                        <span class="col-sm border border-dark1">Seek Temporal Link: <button id="researchTemporal">Search</button> <span id="temporalResearchValue"> 0/1000</span> (Int)</span>
+                    </span>
+                    <span class="row">
+                        <span class="col-sm border border-dark">Robot Scientist: <button id="automateInt">Create</button> <span id="intelligenceRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="intelligenceRobotValue"> Total: 0</span></span>
+                        <span class="col-sm border border-dark">Robot Trainer: <button id="automateTraining">Create</button> <span id="trainingRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="trainingRobotValue"> Total: 0</span></span>
+                    </span>
+                    <span class="row">
+                        <span class="col-sm border border-dark">Robot Tinkerer: <button id="automateTinkering">Create</button> <span id="tinkeringRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="tinkeringRobotValue"> Total: 0</span></span>
+                        <span class="col-sm border border-dark">Robot Scavenger: <button id="automateScavenging">Create</button> <span id="scavengingRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="scavengingRobotValue"> Total: 0</span></span>
+                    </span>
+                </div>
+
+                <div class="tab-pane " id="workshop">...</div>
+
+                <div id="mainStats" class="tab-pane active" style="display:none">
+                    <span class="row justify-content-center">
+                        Resources
+                    </span>
+                    <span class="row">
+                        <span class="col-sm border border-dark">Intelligence: <span id="intelligenceValue">0</span>
+                            <span id="intelligenceCapContainer" style="display:none">/ <span id="intelligenceCap">0</span></span>
+                        <span id="intelligenceIncContainer" style="display:none">   (<span id="intelligenceInc">0</span>/C)</span>
+                        <span id="intelligenceAutoIncContainer" style="display:none"> (<span id="intelligenceAutoInc">0</span>/T)
+                            <span><button id="trainAutoIntelligenceInc" style="float: right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy ">Infuse</button></span></span>
+                        </span>
+                        <span class="col-sm border border-dark">Training: <span id="trainingValue" >0</span>
+                        <span id="trainingCapContainer" style="display:none">/ <span id="trainingCap">0</span></span>
+                        <span id="trainingIncContainer" style="display:none"> (<span id="trainingInc">0</span>/C)</span>
+                        <span id="trainingAutoIncContainer" style="display:none"> (<span id="trainingAutoInc">0</span>/T)
+                            <span><button id="trainAutoTrainingInc" style="float: right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Infuse</button></span></span>
+                        </span>
+                        <span id="tinkeringStat" style="display:none" class="col-sm border border-dark">Tinkering: <span id="tinkeringValue" >0</span>
+                        <span>/ <span id="tinkeringCap">0</span></span>
+                        <span>(<span id="tinkeringInc">0</span>/C)</span>
+                        <span id="tinkeringAutoIncContainer"> (<span id="tinkeringAutoInc">0</span>/T)</span>
+                        <button id="tinkeringAutoTrainingInc" style="float:right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Train</button></span>
+
+                        <span id="scavengingStat" style="display:none" class="col-sm border border-dark">Scavenging: <span id="scavengingValue" >0</span>
+                        <span>/ <span id="scavengingCap">0</span></span>
+                        <span > (<span id="scavengingInc">0</span>/C)</span>
+                        <span id="scavengingAutoIncContainer"> (<span id="scavengingAutoInc">0</span>/T)</span>
+                        <button id="scavengingAutoTrainingInc" style="float:right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Train</button></span>
+                    </span>
+                    <span id="deathStat" class="row" style="display:none">
+                        <span class="col-sm border border-dark">Temporal Energy: <span id="deathValue">1</span></span>
+                    </span>
+                    <span class="row justify-content-center">
+                        Battle Statistics
+                    </span>
+                    <span id="combat" class="row" style="display:none">
+                        <span class="col-sm border border-dark" id="hpContainer">Hp: <span id="hpValue">0</span> <button id="trainHp" style="display: none;" data-toggle="tooltip" data-placement="top" title="150 Training">Train</button></span>
+                        <span class="col-sm border border-dark" id="atkContainer">Atk: <span id="atkValue">0</span> <button id="trainAtk" style="display: none;" data-toggle="tooltip" data-placement="top" title="150 Training">Train</button></span>
+                    </span>
+                    <span class="row">
+                        <span id="scrapStats" class="col-sm-1 border border-dark" style="display:none">Scrap: <span id="scrapValue">0/50</span></span>
+                        <span id="essenceStats" class="col-sm-1 border border-dark" style="display:none">Vitae: <span id="essenceValue">0/50</span></span>
+                    </span>
+                </div>
+            </div>
+        </span>
     </span>
 </div>
 <div id="enemyStats" style="display:none;" class="container-fluid">
@@ -102,34 +138,6 @@
             <span class="col-sm-3 border border-light">Exp: <span id="repairTNL">0/10</span></span>
         </span>
     </span>
-</div>
-
-<div>
-    <ul class="nav nav-tabs">
-        <li class="nav-item" id="automationActions" style="display:none;">
-            <a class="nav-link active" data-toggle="tab" href="#automation">TASC</a>
-        </li>
-        <li class="nav-item" id="workshopActions" style="display:none;">
-            <a class="nav-link" data-toggle="tab" href="#workshop">Workshop</a>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        <div class="tab-pane container" id="automation">
-            <span class="row" id="temporalResearchContainer" style="display:none;">
-                <span class="col-sm-3 border border-dark1">Seek Temporal Link: <button id="researchTemporal">Search</button> <span id="temporalResearchValue"> 0/1000</span> (Int)</span>
-            </span>
-            <span class="row">
-                <span class="col-sm-3 border border-dark">Robot Scientist: <button id="automateInt">Create</button> <span id="intelligenceRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="intelligenceRobotValue"> Total: 0</span></span>
-                <span class="col-sm-3 border border-dark">Robot Trainer: <button id="automateTraining">Create</button> <span id="trainingRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="trainingRobotValue"> Total: 0</span></span>
-            </span>
-            <span class="row">
-                <span class="col-sm-3 border border-dark">Robot Tinkerer: <button id="automateTinkering">Create</button> <span id="tinkeringRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="tinkeringRobotValue"> Total: 0</span></span>
-                <span class="col-sm-3 border border-dark">Robot Scavenger: <button id="automateScavenging">Create</button> <span id="scavengingRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="scavengingRobotValue"> Total: 0</span></span>
-            </span>
-        </div>
-        <div class="tab-pane container" id="workshop">...</div>
-    </div>
 </div>
 
 <br><br>

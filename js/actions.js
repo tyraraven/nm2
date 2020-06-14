@@ -165,7 +165,8 @@ function lookAction() {
 }
 
 function finishTutorial() {
-    document.getElementById('mainStats').style.display='block';
+    document.getElementById('mainStats').style.display='';
+    document.getElementById('mainStatsTab').style.display='';
     document.getElementById('actionFeedback').style.display='block';
     document.getElementById('train').style.display='block';
     document.getElementById('look').innerHTML = 'Consider';
