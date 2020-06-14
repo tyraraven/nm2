@@ -61,7 +61,7 @@ var gs = {
     intelligenceCap: 100,
     intelligenceAutoInc: 0,
     intelligenceInc: 1,
-    intelligenceMult: 1,
+    intelligenceMult: 2,
     intelligenceRobot: 0,
     intelligenceRobotCap: 5,
 
@@ -79,7 +79,7 @@ var gs = {
 
     training: 0,
     trainingAutoInc: 0,
-    trainingMult: 1,
+    trainingMult: 2,
     trainingInc: 1,
     trainingCap: 100,
     trainingRobot: 0,
@@ -87,7 +87,7 @@ var gs = {
 
     tinkering: 0,
     tinkeringAutoInc: 0,
-    tinkeringMult: 1,
+    tinkeringMult: 2,
     tinkeringInc: 1,
     tinkeringCap: 100,
     tinkeringRobot: 0,
@@ -95,7 +95,7 @@ var gs = {
 
     scavenging: 0,
     scavengingAutoInc: 0,
-    scavengingMult: 1,
+    scavengingMult: 2,
     scavengingInc: 1,
     scavengingCap: 100,
     scavengingRobot: 0,
@@ -497,7 +497,7 @@ function decorateCapStat(stat) {
 function decorateStat(stat) {
     $('#'+stat+'Value')[0].innerHTML = gs[stat];
     $('#'+stat+'Cap')[0].innerHTML=gs[stat+'Cap'];
-    $('#'+stat+'Inc')[0].innerHTML=gs[stat+'Inc'];
+    $('#'+stat+'Inc')[0].innerHTML=gs[stat+'Inc']*gs[stat+'Mult'];
     $('#'+stat+'AutoInc')[0].innerHTML=gs[stat+'AutoInc'];
 }
 
