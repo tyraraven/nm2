@@ -894,6 +894,7 @@ function resetPhase1() {
 
 function revealDeathStat() {
    reveal('deathStat');
+   reveal('tickContainer');
 }
 
 function unlockDeathUpgrades() {
@@ -921,7 +922,7 @@ function resetAbilityScores() {
 }
 
 function updateActionFeedback(message) {
-    document.getElementById('actionFeedback').value = message;
+    $('#actionFeedback')[0].innerHTML = message;
 }
 
 function clearMainStory() {
@@ -929,7 +930,7 @@ function clearMainStory() {
 }
 
 function updateMainStory(message) {
-    document.getElementById('mainStory').value += '\n' + message;
+    $('#mainStory')[0].value += '\n' + message;
     $('#mainStory').scrollTop($('#mainStory')[0].scrollHeight);
 }
 
@@ -983,6 +984,11 @@ function save() {
     store.set("mob", mob);
     updateActionFeedback("Game Saved.... ");
     return true;
+}
+
+function manualLoad() {
+    load();
+    location.reload();
 }
 
 function load() {
@@ -1069,7 +1075,7 @@ $( document ).ready(function() {
     $('#basicAttack').click(basicAttackClick);
     $('#repair').click(repairClick);
     $('#saveGame').click(save);
-    $('#loadGame').click(load);
+    $('#loadGame').click(manualLoad);
     $('#hardReset').click(hardReset);
     $('#researchTemporal').click(temporalResearchAction);
     $('#tinkeringAutoTrainingInc').click(trainAutoTinkeringInc);

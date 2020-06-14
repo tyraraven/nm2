@@ -20,7 +20,19 @@
     <script type="text/javascript" src="./js/store.js"> </script>
 </head>
 <body>
+<div id="feedback" class="container-fluid">
+    <span class="row">
+        <span class="col-sm border border-dark" id="actionFeedback" style="display:none;">You do nothing.</span>
+        <span id="tickContainer" style="display:none;" class="col-sm-1 border border-dark">Tick: <span id="tickValue">0</span></span>
+    </span>
+    <span class="row">
+        <textarea class="form-control" rows="15" id="mainStory" style="border: solid;">You awake in complete and total darkness with no idea who you are or how you got there.</textarea>
+    </span>
+</div>
 <div id="mainStats" class="container-fluid border rounded border-secondary collapse" style="display:none">
+    <span class="row justify-content-center">
+        Resources
+    </span>
     <span class="row">
         <span class="col-sm border border-dark">Intelligence: <span id="intelligenceValue">0</span>
             <span id="intelligenceCapContainer" style="display:none">/ <span id="intelligenceCap">0</span></span>
@@ -47,38 +59,36 @@
         <button id="scavengingAutoTrainingInc" style="float:right" class="btn-sm btn-secondary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Train</button></span>
     </span>
     <span id="deathStat" class="row" style="display:none">
-        <span class="col-sm-8 border border-dark">Temporal Energy: <span id="deathValue">1</span></span>
-        <span class="col-sm-1 border border-dark">Tick: <span id="tickValue">0</span></span>
+        <span class="col-sm border border-dark">Temporal Energy: <span id="deathValue">1</span></span>
+    </span>
+    <span class="row justify-content-center">
+        Battle Statistics
+    </span>
+    <span id="combat" class="row" style="display:none">
+        <span class="col-sm border border-dark" id="hpContainer">Hp: <span id="hpValue">0</span> <button id="trainHp" style="display: none;" data-toggle="tooltip" data-placement="top" title="150 Training">Train</button></span>
+        <span class="col-sm border border-dark" id="atkContainer">Atk: <span id="atkValue">0</span> <button id="trainAtk" style="display: none;" data-toggle="tooltip" data-placement="top" title="150 Training">Train</button></span>
     </span>
     <span class="row">
         <span id="scrapStats" class="col-sm-1 border border-dark" style="display:none">Scrap: <span id="scrapValue">0/50</span></span>
         <span id="essenceStats" class="col-sm-1 border border-dark" style="display:none">Vitae: <span id="essenceValue">0/50</span></span>
     </span>
 </div>
-<div id="combat" class="container-fluid" style="display:none">
-    <div id="combatTraining" class="row">
-        <span class="col-sm-3 border border-dark" id="hpContainer">Hp: <span id="hpValue">0</span> <button id="trainHp" style="display: none;" data-toggle="tooltip" data-placement="top" title="150 Training">Train</button></span>
-        <span class="col-sm-3 border border-dark" id="atkContainer">Atk: <span id="atkValue">0</span> <button id="trainAtk" style="display: none;" data-toggle="tooltip" data-placement="top" title="150 Training">Train</button></span>
-    </div>
-</div>
-<div id="feedback" class="container-fluid">
+<div id="enemyStats" style="display:none;" class="container-fluid">
+    <span class="row justify-content-center">
+        Battle
+    </span>
     <span class="row">
-        <textarea class="form-control" rows="2" id="actionFeedback" style="display:none; border: solid;">You do nothing.</textarea>
-        <textarea class="form-control" rows="15" id="mainStory" style="border: solid;">You awake in complete and total darkness with no idea who you are or how you got there.</textarea>
+        <span class="col-sm border border-dark">Combat Status: <span id="combatStatus">None</span></span>
+        <span class="col-sm border border-dark">Opponent: <span id="opponentName"></span></span>
     </span>
 </div>
 <div id="characterActions" class="container-fluid">
+    <span class="row justify-content-center">Actions</span>
     <span class="row">
         <button class="btn-sm btn-primary" id="look">Consider</button>
         <button class="btn-sm btn-primary" id="train" style="display:none">Train</button>
         <button class="btn-sm btn-primary" id="tinker" style="display:none">Tinker</button>
         <button class="btn-sm btn-primary" id="scavenge" style="display:none">Scavenge</button>
-    </span>
-</div>
-<div id="enemyStats" style="display:none;" class="container-fluid">
-    <span class="row">
-        <span class="col-sm-3 border border-dark">Combat Status: <span id="combatStatus">None</span></span>
-        <span class="col-sm-3 border border-dark">Opponent: <span id="opponentName"></span></span>
     </span>
 </div>
 <div id="combatActions" style="display:none;" class="container-fluid">
