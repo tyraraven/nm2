@@ -91,22 +91,35 @@
         </span>
     </span>
 </div>
-<div id="automationActions" style="display:none;" class="container-fluid">
-    <button id="toggleAutomation" onClick="toggleAutomation();">TASC</button>
-    <div id="automationPanel" class="row" style="display:none">
-        <span class="row">
-            <span class="col-sm-3 border border-dark1">Seek Temporal Link: <button id="researchTemporal">Search</button> <span id="temporalResearchValue"> 0/1000</span> (Int)</span>
-        </span>
-        <span class="row">
-            <span class="col-sm-3 border border-dark">Robot Scientist: <button id="automateInt">Create</button> <span id="intelligenceRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="intelligenceRobotValue"> Total: 0</span></span>
-            <span class="col-sm-3 border border-dark">Robot Trainer: <button id="automateTraining">Create</button> <span id="trainingRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="trainingRobotValue"> Total: 0</span></span>
-        </span>
-        <span class="row">
-            <span class="col-sm-3 border border-dark">Robot Tinkerer: <button id="automateTinkering">Create</button> <span id="tinkeringRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="tinkeringRobotValue"> Total: 0</span></span>
-            <span class="col-sm-3 border border-dark">Robot Scavenger: <button id="automateScavenging">Create</button> <span id="scavengingRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="scavengingRobotValue"> Total: 0</span></span>
-        </span>
+
+<div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item" id="automationActions" style="display:none;">
+            <a class="nav-link active" data-toggle="tab" href="#automation">TASC</a>
+        </li>
+        <li class="nav-item" id="workshopActions" style="display:none;">
+            <a class="nav-link" data-toggle="tab" href="#workshop">Workshop</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane container" id="automation">
+            <span class="row">
+                <span class="col-sm-3 border border-dark1">Seek Temporal Link: <button id="researchTemporal">Search</button> <span id="temporalResearchValue"> 0/1000</span> (Int)</span>
+            </span>
+            <span class="row">
+                <span class="col-sm-3 border border-dark">Robot Scientist: <button id="automateInt">Create</button> <span id="intelligenceRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="intelligenceRobotValue"> Total: 0</span></span>
+                <span class="col-sm-3 border border-dark">Robot Trainer: <button id="automateTraining">Create</button> <span id="trainingRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="trainingRobotValue"> Total: 0</span></span>
+            </span>
+            <span class="row">
+                <span class="col-sm-3 border border-dark">Robot Tinkerer: <button id="automateTinkering">Create</button> <span id="tinkeringRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="tinkeringRobotValue"> Total: 0</span></span>
+                <span class="col-sm-3 border border-dark">Robot Scavenger: <button id="automateScavenging">Create</button> <span id="scavengingRobotCost"> 25 (Scrap) 25 (Vitae)</span><span id="scavengingRobotValue"> Total: 0</span></span>
+            </span>
+        </div>
+        <div class="tab-pane container" id="workshop">...</div>
     </div>
 </div>
+
 <br><br>
 <div id="footer" class="container-fluid">
     <span class="row">

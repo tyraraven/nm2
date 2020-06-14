@@ -15,6 +15,7 @@ var player = {
 };
 
 var gs = {
+
     // revealStates
     capsRevealed: false,
     incRevealed: false,
@@ -28,8 +29,11 @@ var gs = {
     firstCombatUnlocksRevealed: false,
     scrapRevealed: false,
     essenceRevealed: false,
-    automationRevealed: false,
     repairRevealed: false,
+
+    // Facilities
+    automationRevealed: false,
+    workshopRevealed: false,
 
     // scrap
     scrap: 0,
@@ -65,16 +69,9 @@ var gs = {
     baseRobotCost: 10,
 
     automateIntRevealed: false,
-    automatonsInt: 0,
-
     automateTrainingRevealed: false,
-    automatonsTraining: 0,
-
     automateTinkeringRevealed: false,
-    automatonsTinkering: 0,
-
     automateScavengingRevealed: false,
-    automatonsScavenging: 0,
 
     // kill stats
     bossesKilled: 1,
@@ -129,7 +126,7 @@ var gs = {
 
 var shardBosses = [];
 shardBosses.push(["Strange Creature", 10, 5, 1, 0]);
-shardBosses.push(["Corrupted Spirit (Not Finished)", 1500, 15, 10, 10]);
+shardBosses.push(["Corrupted Spirit (Not Finished)", 15000, 15, 10, 10]);
 
 // Random Encounters Phase1
 var randomEncountersArray = [];
@@ -286,7 +283,7 @@ function checkTinkeringUnlocks() {
         pulseGently();
     } else if (gs.tinkering > 25 && !gs.automationRevealed) {
         gs.automationRevealed=true;
-        updateMainStory("Looking at all of the scrap lying around you think that you might be able to get some of the robots working again if you had enough scrap and something to power them.");
+        updateMainStory("Looking at all of the scrap lying around you think that you might be able to get some of the destroyed robots working again if you had enough scrap and something to power them.");
         pulseStrongly();
         updateMainStory("Suddenly the wall on the opposite side of the door turns translucent, and you see images of yourself doing various tasks. ");
         updateMainStory('You hear what you think is your own human voice coming from the amulet: "Temporal Automation is the key to me accomplishing my goal.  If I study a task long enough I should be able to create a robot to perform it for me in a micro time loop."');
@@ -302,6 +299,15 @@ function checkTinkeringUnlocks() {
         pulseStrongly();
         updateMainStory("You know its going to take practice, but might help you survive what is coming.");
         revealRepair();
+    } else if (gs.tinkering > 310 && !gs.workshopRevealed) {
+        gs.workshopRevealed=true;
+        updateMainStory("You remember *building* things.  It was one of your true passions in life.");
+        updateMainStory("Suddenly you remember, this room should have a workshop in it already.  You walk over to the eastern wall and press a button.");
+        updateMainStory("With a hiss the wall opens up revealing a workshop covered with dust.  Much of the items seem ancient and ruined, but they should be good enough to start making *new* tools again.");
+        pulseStrongly();
+        updateMainStory("Sophia would always smile when you came into her lab with a new creation, her smile motivated you to work harder.  You feel a deep pain, somehow you are filled with sorrow.");
+        revealWorkshop();
+
     }
     else if (gs.tinkering >= gs.tinkeringCap) {
                     gs.tinkeringCap = Math.round(gs.tinkeringCap = gs.tinkeringCap * gs.capFactor);
@@ -614,6 +620,7 @@ function runCombatRound() {
             updateMainStory("The " + mob.name + " falls to the ground dead.");
             combatRewards();
             gs.inCombat = false;
+            clearCombatInfo();
             return true;
         }
     }
@@ -915,6 +922,10 @@ function revealAutomation() {
     $('#automateScavenging').click(buildAutomaton('scavenging'));
 }
 
+function revealWorkshop() {
+    $('#workshopActions')[0].style.display="block";
+}
+
 function buildAutomaton(param) {
     return function() {
                 var currentCost = gs.baseRobotCost * (gs[param+'Robot'] + 1);
@@ -1018,17 +1029,11 @@ function processUnlocks() {
     if (gs.automationRevealed) {
         revealAutomation();
     }
+    if (gs.workshopRevealed) {
+        revealWorkshop();
+    }
     if (gs.repairRevealed) {
         revealRepair();
-    }
-}
-
-function toggleAutomation() {
-    let panel = $('#automationPanel')[0];
-    if (panel.style.display=="block") {
-        panel.style.display="none";
-    } else {
-        panel.style.display="block";
     }
 }
 
@@ -1045,6 +1050,12 @@ $( document ).ready(function() {
     $('#researchTemporal').click(temporalResearchAction);
     $('#tinkeringAutoTrainingInc').click(trainAutoTinkeringInc);
     $('#scavengingAutoTrainingInc').click(trainAutoScavengingInc);
+
+    $(".nav-link").click(function(){
+        if ($(this).hasClass('active')){
+            $('#' + this.hash.substr(1).toLowerCase()).toggleClass('active');
+        }
+    });
     // Might go back to this
     //if (store.get("gameState") != null && confirm("Load your saved game?")) {load()}
     if (store.get("gameState") != null) {load()}
