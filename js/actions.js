@@ -680,7 +680,7 @@ function trackTime() {
             updateMainStory("You have been slain by " + mob.name);
             clearCombatInfo();
         }
-    } else if (!gi.firstCombatWon && gs.tick >= 15) {
+    } else if (!gs.firstCombatWon && gs.tick >= 10) {
         checkFirstCombat();
     }
     else if (gs.firstCombatWon && (gs.tick > 15 && gs.tick < 50)) {
