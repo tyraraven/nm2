@@ -804,7 +804,7 @@ function trackTime() {
 
     // Are we in combat?
     if (gs.inCombat) {
-        updateCombatInfo();
+        updateCombatInfo(true);
         if (!runCombatRound()) {
             clearCombatInfo();
         }
@@ -947,11 +947,11 @@ function revealRepair() {
     reveal('repairContainer');
 }
 
-function updateCombatInfo() {
+function updateCombatInfo(skipImage) {
     $('#opponentName')[0].innerHTML = mob.name;
     $('#combatStatus')[0].innerHTML = "Engaged";
     $('#combatStatus')[0].classList.add("bg-danger");
-    if (mob.image) {
+    if (mob.image && !skipImage) {
         $('#monsterImage')[0].src='./images/'+mob.image;
     }
 };
