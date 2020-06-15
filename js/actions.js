@@ -265,6 +265,21 @@ function trainHp() {
     }
 }
 
+function buildArmor() {
+    var armorCost = (player.armorLevel+1) * 15;
+    if (gs.scrap >= armorCost && gs.tinkering >= 500) {
+        gs.scrap-=armorCost;
+        gs.tinkering-=300;
+        player.armorLevel++;
+        player.maxHp+=(player.armorLevel*25)
+        updateMainStory('Using the knowledge you gained while scavenging you improve your own exoskeletal plating, significantly improving your total toughness');
+        trackTime();
+    } else {
+        alert('You need at least ' + armorCost + ' scrap and 500 tinkering to improve your armor');
+    }
+
+}
+
 function buildScanner() {
     if (!gs.scannerBuilt && gs.scrap >= 25 && gs.tinkering >= 300) {
         updateMainStory("You integrate the scanner into your body, you can now see just how tough the enemies you are facing are.");
@@ -1129,6 +1144,7 @@ function load() {
 
 function revealArmor() {
     reveal('armorContainer');
+    $('#buildArmor').click(buildArmor);
 }
 
 function hardReset() {
