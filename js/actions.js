@@ -11,7 +11,9 @@ var mob;
 var player = {
     hp: 1,
     totalHp: 1,
-    atk: 1
+    atk: 1,
+    armorLevel: 0,
+    scannerLevel: 0
 };
 
 var gs = {
@@ -38,6 +40,7 @@ var gs = {
     // Workshop Projects
     scannerRevealed: false,
     scannerBuilt: false,
+    armorRevealed: false,
 
     // scrap
     scrap: 0,
@@ -146,7 +149,17 @@ randomEncountersArray.push(["Small Vicious Scavenger", 7, 16, 0, 2]);
 randomEncountersArray.push(["Large Vicious Scavenger", 19, 16, 0, 3]);
 randomEncountersArray.push(["Hunting Humanoid", 26, 12, 3, 1]);
 
+var armorFlavorArray = [];
+armorFlavorArray.push("No Armor");
+armorFlavorArray.push("Haphazard Plating");
+armorFlavorArray.push("Simple Plating");
+armorFlavorArray.push("Light Armored Shell");
+armorFlavorArray.push("Armored Shell");
+armorFlavorArray.push("Heavy Armored Shell");
 
+var scannerFlavorArray = [];
+scannerFlavorArray.push("No scanner");
+scannerFlavorArray.push("Simple Scanner");
 
 function lookAction() {
     if (!isAware) {
@@ -260,7 +273,9 @@ function buildScanner() {
         disableButton('buildScanner');
         gs.scrap-=25;
         gs.tinkering-=300;
+        player.scannerLevel++;
         reveal('enemyHpContainer');
+        trackTime();
     } else {
         alert('You need 25 scrap and 300 tinkering to integrate the scanner.');
     }
@@ -378,6 +393,13 @@ function checkScavengingUnlocks() {
         updateMainStory('Workshop Project Unlocked: Scanner.');
         pulseGently();
         revealScanner();
+    } else if (gs.scavenging >= 410 && !gs.armorRevealed && gs.workshopRevealed) {
+        gs.armorRevealed = true;
+        updateMainStory('Sifting through the wreckage of yet another robotic creature you look at their exoskeleton more closely.  There is a layering to the scrap you pull from it, and you theorize that while its hole it likely explains a lot of these creatures toughness.');
+        updateMainStory('You can likely reverse engineer the scrap into armor for your present body, increasing its survivability per cycle.');
+        updateMainStory('Workshop Project Unlocked: Improve Armor.');
+        pulseGently();
+        revealArmor();
     } else if (gs.scavenging >= gs.scavengingCap) {
         gs.scavengingCap = Math.round(gs.scavengingCap = gs.scavengingCap * gs.capFactor);
         gs.scavenging = 0;
@@ -521,6 +543,25 @@ function decorateToolTips() {
         decorateRobot('scavenging');
         decorateRobot('tinkering');
     }
+    if (gs.armorRevealed) {
+        decorateFlavorText('armor');
+    }
+    if (gs.scannerRevealed) {
+        decorateFlavorText('scanner');
+    }
+}
+
+// This particular piece of code is super bad.. I want to refactor it but I'm going to need to learn more before I can
+
+function decorateFlavorText() {
+ for (i = 0; i < arguments.length; i++) {
+    let level = arguments[i]+'Level';
+    let levelValue = player[level];
+    let levelValueReadable = levelValue+1;
+    let flavor = arguments[i]+'Flavor';
+    let flavorText = window[flavor+'Array'][levelValue];
+    $('#' + flavor)[0].innerHTML='Level: ' + levelValueReadable + ' ' + flavorText;
+  }
 }
 
 function temporalResearchAction() {
@@ -1079,6 +1120,10 @@ function load() {
     return true;
 }
 
+function revealArmor() {
+    reveal('armorContainer');
+}
+
 function hardReset() {
     if (confirm("Are you sure, this will completely erase your save and you will need to start over!")) {
         store.clearAll()
@@ -1142,6 +1187,10 @@ function processUnlocks() {
 
     if (gs.scannerRevealed) {
         revealScanner();
+    }
+
+    if (gs.armorRevealed) {
+        revealArmor();
     }
 }
 
