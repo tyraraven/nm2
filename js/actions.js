@@ -132,22 +132,22 @@ var gs = {
 
 
 var shardBosses = [];
-shardBosses.push(["Strange Creature", 10, 5, 1, 0]);
-shardBosses.push(["Corrupted Spirit (Not Finished)", 15000, 15, 10, 10]);
+shardBosses.push(["Strange Creature", 10, 5, 1, 0, 'Spirit_1.gif']);
+shardBosses.push(["Corrupted Spirit (Not Finished)", 15000, 15, 10, 10, 'Spirit_1.gif']);
 
 // Random Encounters Phase1
 var randomEncountersArray = [];
-randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
-randomEncountersArray.push(["Smashed Humanoid", 20, 2, 1, 0]);
-randomEncountersArray.push(["Damaged Humanoid", 12, 8, 1, 0]);
-randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
-randomEncountersArray.push(["Smashed Humanoid", 12, 3, 1, 0]);
-randomEncountersArray.push(["Smashed Hulking Humanoid", 17, 2, 2, 0]);
-randomEncountersArray.push(["Small Scavenger", 10, 6, 0, 1]);
-randomEncountersArray.push(["Small Scavenger", 6, 9, 0, 1]);
-randomEncountersArray.push(["Small Vicious Scavenger", 7, 16, 0, 2]);
-randomEncountersArray.push(["Large Vicious Scavenger", 19, 16, 0, 3]);
-randomEncountersArray.push(["Hunting Humanoid", 26, 12, 3, 1]);
+randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0, 'Humanoid_1.gif']);
+randomEncountersArray.push(["Smashed Humanoid", 20, 2, 1, 0, 'Humanoid_1.gif']);
+randomEncountersArray.push(["Damaged Humanoid", 12, 8, 1, 0, 'Humanoid_1.gif']);
+randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0, 'Humanoid_1.gif']);
+randomEncountersArray.push(["Smashed Humanoid", 12, 3, 1, 0, 'Humanoid_1.gif']);
+randomEncountersArray.push(["Smashed Hulking Humanoid", 17, 2, 2, 0, 'Humanoid_1.gif']);
+randomEncountersArray.push(["Small Scavenger", 10, 6, 0, 1, 'Scavenger_1.gif']);
+randomEncountersArray.push(["Small Scavenger", 6, 9, 0, 1, 'Scavenger_1.gif']);
+randomEncountersArray.push(["Small Vicious Scavenger", 7, 16, 0, 2, 'Scavenger_1.gif']);
+randomEncountersArray.push(["Large Vicious Scavenger", 19, 16, 0, 3, 'Scavenger_1.gif']);
+randomEncountersArray.push(["Hunting Humanoid", 26, 12, 3, 1, 'Cyborg_1.gif']);
 
 var armorFlavorArray = [];
 armorFlavorArray.push("No Armor");
@@ -805,6 +805,7 @@ function trackTime() {
     } else if (gs.firstCombatWon && gs.tick >= 50) {
         updateMainStory("Another spirit comes through the door of the room, eyes burning a fearsome red with ominous black streaks running through them.");
         mob = getMonster(...shardBosses[1]);
+        updateCombatInfo();
         gs.inCombat=true;
     }
 
@@ -935,6 +936,9 @@ function updateCombatInfo() {
     $('#opponentName')[0].innerHTML = mob.name;
     $('#combatStatus')[0].innerHTML = "Engaged";
     $('#combatStatus')[0].classList.add("bg-danger");
+    if (mob.image) {
+        $('#monsterImage')[0].src='./images/'+mob.image;
+    }
 };
 
 function runCombatIntro() {
@@ -945,6 +949,7 @@ function clearCombatInfo() {
     $('#opponentName')[0].innerHTML = "No Opponent";
     $('#combatStatus')[0].innerHTML = "None";
     $('#combatStatus')[0].classList.remove("bg-danger");
+    $('#monsterImage')[0].src='';
 }
 
 function levelUpCombatSkills() {
@@ -1077,7 +1082,7 @@ function buildAutomaton(param) {
            };
 }
 
-function getMonster(name, hp, atk, baseScrap, baseNecroEnergy) {
+function getMonster(name, hp, atk, baseScrap, baseNecroEnergy, image) {
     let maxHp = hp;
     return {
         name,
@@ -1085,7 +1090,8 @@ function getMonster(name, hp, atk, baseScrap, baseNecroEnergy) {
         maxHp,
         atk,
         baseScrap,
-        baseNecroEnergy
+        baseNecroEnergy,
+        image
     }
 }
 
@@ -1110,6 +1116,7 @@ function load() {
     if (saveState != null) { Object.assign(gs, saveState) } else { return false }
 
     mob = store.get("mob")
+    updateCombatInfo();
     finishTutorial();
     processUnlocks();
     decorateToolTips();
