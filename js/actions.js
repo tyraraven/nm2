@@ -135,10 +135,11 @@ randomEncountersArray.push(["Smashed Humanoid", 20, 2, 1, 0]);
 randomEncountersArray.push(["Damaged Humanoid", 12, 8, 1, 0]);
 randomEncountersArray.push(["Smashed Humanoid", 12, 2, 1, 0]);
 randomEncountersArray.push(["Smashed Humanoid", 12, 3, 1, 0]);
-randomEncountersArray.push(["Smashed Hulking Humanoid", 17, 2, 1, 0]);
+randomEncountersArray.push(["Smashed Hulking Humanoid", 17, 2, 2, 0]);
 randomEncountersArray.push(["Small Scavenger", 10, 6, 0, 1]);
 randomEncountersArray.push(["Small Scavenger", 6, 9, 0, 1]);
-randomEncountersArray.push(["Small Vicious Scavenger", 7, 16, 0, 1]);
+randomEncountersArray.push(["Small Vicious Scavenger", 7, 16, 0, 2]);
+randomEncountersArray.push(["Large Vicious Scavenger", 19, 16, 0, 3]);
 randomEncountersArray.push(["Hunting Humanoid", 26, 12, 3, 1]);
 
 
@@ -1099,13 +1100,6 @@ $( document ).ready(function() {
     $('#researchTemporal').click(temporalResearchAction);
     $('#tinkeringAutoTrainingInc').click(trainAutoTinkeringInc);
     $('#scavengingAutoTrainingInc').click(trainAutoScavengingInc);
-
-    // Overwrite nav-link to close when pressed again
-    $(".nav-link").click(function(){
-        if ($(this).hasClass('active')){
-            $('#' + this.hash.substr(1).toLowerCase()).toggleClass('active');
-        }
-    });
 
     //Enable Tooltips
     $(function () {
