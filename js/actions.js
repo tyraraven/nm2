@@ -405,6 +405,7 @@ function checkIntelligenceUnlocks () {
         updateMainStory("This will also likely lead to further research projects later on.");
         updateMainStory("A new research project is available in the TASC.  You can dump resources into it and have progress carry over from cycle to cycle.");
         gs.temporalResearchRevealed = true;
+        revealTemporalResearch();
     }
     else if (gs.intelligence >= gs.intelligenceCap  && gs.capRaiseRevealed) {
         gs.intelligenceCap = Math.round(gs.intelligenceCap = gs.intelligenceCap * gs.capFactor);
@@ -414,10 +415,18 @@ function checkIntelligenceUnlocks () {
     }
 }
 
+function revealTemporalResearch() {
+    reveal('temporalResearchContainer');
+}
+
 function revealAutoIncTraining() {
     reveal('intelligenceAutoIncContainer', 'trainingAutoIncContainer');
     $('#trainAutoIntelligenceInc').click(trainAutoIntInc);
     $('#trainAutoTrainingInc').click(trainAutoTrainingInc);
+}
+
+function decorateUpdatingTooltips() {
+        $('#basicAttack').tooltip('hide').attr('data-original-title', gs.basicAttackCost + ' Training');
 }
 
 function decorateToolTips() {
@@ -432,7 +441,7 @@ function decorateToolTips() {
         $('#deathValue')[0].innerHTML=gs.deaths;
     }
     if (gs.combatSkillsRevealed) {
-        $('#basicAttack')[0].title=gs.basicAttackCost + ' Training';
+        //$('#basicAttack')[0].title=gs.basicAttackCost + ' Training';
         $('#basicAttackTNL')[0].innerHTML=gs.basicAttackExp + '/' + gs.basicAttackLevelUpCost;
     }
     if (gs.repairRevealed) {
@@ -848,6 +857,8 @@ function levelUpCombatSkills() {
         gs.basicAttackLevelUpCost = Math.round(gs.basicAttackLevelUpCost *= 1.5);
         gs.basicAttackExp = 0;
         gs.basicAttackCost = Math.round(gs.basicAttackCost *= .9);
+        $('#basicAttack').tooltip('hide')
+            .attr('data-original-title', gs.basicAttackCost + ' Training');
     }
     if (gs.repairExp >= gs.repairLevelUpCost) {
         pulseGently();
@@ -1006,7 +1017,7 @@ function load() {
 
     updateActionFeedback("Game loaded....");
     clearMainStory();
-    decorateToolTips();
+
     return true;
 }
 
@@ -1066,6 +1077,10 @@ function processUnlocks() {
     if (gs.repairRevealed) {
         revealRepair();
     }
+
+    if (gs.temporalResearchRevealed) {
+        revealTemporalResearch();
+    }
 }
 
 $( document ).ready(function() {
@@ -1096,4 +1111,5 @@ $( document ).ready(function() {
     // Might go back to this
     //if (store.get("gameState") != null && confirm("Load your saved game?")) {load()}
     if (store.get("gameState") != null) {load()}
+    decorateUpdatingTooltips();
 });
