@@ -13,6 +13,7 @@ var player = {
     totalHp: 1,
     atk: 1,
     armorLevel: 0,
+    weaponLevel: 0,
     scannerLevel: 0
 };
 
@@ -41,6 +42,7 @@ var gs = {
     scannerRevealed: false,
     scannerBuilt: false,
     armorRevealed: false,
+    weaponRevealed: false,
 
     // scrap
     scrap: 0,
@@ -149,17 +151,10 @@ randomEncountersArray.push(["Small Vicious Scavenger", 7, 16, 0, 2, 'Scavenger_1
 randomEncountersArray.push(["Large Vicious Scavenger", 19, 16, 0, 3, 'Scavenger_1.gif']);
 randomEncountersArray.push(["Hunting Humanoid", 26, 12, 3, 1, 'Cyborg_1.gif']);
 
-var armorFlavorArray = [];
-armorFlavorArray.push("No Armor");
-armorFlavorArray.push("Haphazard Plating");
-armorFlavorArray.push("Simple Plating");
-armorFlavorArray.push("Light Armored Shell");
-armorFlavorArray.push("Armored Shell");
-armorFlavorArray.push("Heavy Armored Shell");
-
-var scannerFlavorArray = [];
-scannerFlavorArray.push("No scanner");
-scannerFlavorArray.push("Simple Scanner");
+// Flavor Text
+var armorFlavorArray = ["No Armor", "Haphazard Plating", "Simple Plating", "Light Armored Shell", "Armored Shell", "Heavy Armored Shell"];
+var scannerFlavorArray = ["No scanner", "Simple Scanner"];
+var weaponFlavorArray = ["No Weapon", "Broken Metal Appendage", "Simple Metal Club", "Spiked Club", "Short Spear", "Long Spear", "Short Sword", "Steel Short Sword", "Long Sword"];
 
 function lookAction() {
     if (!isAware) {
@@ -271,13 +266,26 @@ function buildArmor() {
         gs.scrap-=armorCost;
         gs.tinkering-=300;
         player.armorLevel++;
-        player.totalHp+=(player.armorLevel+1*25)
+        player.totalHp+=((player.armorLevel+1)*25)
         updateMainStory('Using the knowledge you gained while scavenging you improve your own exoskeletal plating, significantly improving your total toughness');
         trackTime();
     } else {
         alert('You need at least ' + armorCost + ' scrap and 500 tinkering to improve your armor');
     }
+}
 
+function buildWeapon() {
+    var weaponCost = (player.weaponLevel+1) * 8;
+    if (gs.scrap >= weaponCost && gs.tinkering >= 500) {
+        gs.scrap-=weaponCost;
+        gs.tinkering-=300;
+        player.weaponLevel++;
+        player.atk+=((player.weaponLevel)+1*4)
+        updateMainStory('Using the scrap you have, and the tools in your workshop you are able to improve your armament for close combat fighting.');
+        trackTime();
+    } else {
+        alert('You need at least ' + weaponCost + ' scrap and 500 tinkering to improve your armor');
+    }
 }
 
 function buildScanner() {
@@ -367,14 +375,23 @@ function checkTinkeringUnlocks() {
         pulseStrongly();
         updateMainStory("Sophia would always smile when you came into her lab with a new creation, her smile motivated you to work harder.  You feel a deep pain, somehow you are filled with sorrow.");
         revealWorkshop();
-
-    }
-    else if (gs.tinkering >= gs.tinkeringCap) {
+    } else if (gs.tinkering > 477 && !gs.weaponRevealed) {
+        gs.weaponRevealed=true;
+        updateMainStory("You recall smithing weapons to fight against the Phage.  Sophia hated that you were turning your talents towards killing, but you couldn't stand by and do nothing while the world was ravaged.");
+        updateMainStory("So, if it means you will create tools to kill the monsters who used to be your friends and family. but can save those that remain?  So be it.");
+        pulseGently();
+        revealWeapon();
+    } else if (gs.tinkering >= gs.tinkeringCap) {
                     gs.tinkeringCap = Math.round(gs.tinkeringCap = gs.tinkeringCap * gs.capFactor);
                     gs.tinkering = 0;
                     updateMainStory("Suddenly you realize everything up until now that you have created was just garbage.  Armed with this knowledge you start again determined to do better.");
                     pulseGently();
     }
+}
+
+function revealWeapon() {
+    reveal('weaponContainer');
+    $('#buildWeapon').click(buildWeapon);
 }
 
 function checkScavengingUnlocks() {
@@ -564,6 +581,11 @@ function decorateToolTips() {
     if (gs.scannerRevealed) {
         decorateFlavorText('scanner');
     }
+
+    if (gs.weaponRevealed) {
+        decorateFlavorText('weapon');
+    }
+
 }
 
 // This particular piece of code is super bad.. I want to refactor it but I'm going to need to learn more before I can
@@ -1217,6 +1239,10 @@ function processUnlocks() {
 
     if (gs.armorRevealed) {
         revealArmor();
+    }
+
+    if (gs.weaponRevealed) {
+        revealWeapon();
     }
 }
 
