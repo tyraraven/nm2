@@ -1,5 +1,5 @@
 // Version number
-var versionNumber = 'Balancing';
+var versionNumber = 'WorkshopV2';
 
 // Awareness Intro Game Stat
 var isAware = true;
