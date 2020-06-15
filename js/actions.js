@@ -442,11 +442,14 @@ function decorateToolTips() {
     }
     if (gs.combatSkillsRevealed) {
         //$('#basicAttack')[0].title=gs.basicAttackCost + ' Training';
+        // I can't use this pattern long term, its going to get super expensive eventually
+        $('#basicAttack').tooltip('hide')
+                    .attr('data-original-title', gs.basicAttackCost + ' Training');
         $('#basicAttackTNL')[0].innerHTML=gs.basicAttackExp + '/' + gs.basicAttackLevelUpCost;
     }
     if (gs.repairRevealed) {
-        $('#repair')[0].title=gs.repairCost + ' Tinkering';
-        //$('#repairCost')[0].innerHTML=gs.repairCost;
+        $('#repair').tooltip('hide')
+                    .attr('data-original-title', gs.repairCost + ' Tinkering');
         $('#repairTNL')[0].innerHTML=gs.repairExp + '/' + gs.repairLevelUpCost;
     }
     if (gs.firstCombatUnlocksRevealed) {
@@ -1111,5 +1114,4 @@ $( document ).ready(function() {
     // Might go back to this
     //if (store.get("gameState") != null && confirm("Load your saved game?")) {load()}
     if (store.get("gameState") != null) {load()}
-    decorateUpdatingTooltips();
 });
