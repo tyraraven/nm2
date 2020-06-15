@@ -35,6 +35,10 @@ var gs = {
     automationRevealed: false,
     workshopRevealed: false,
 
+    // Workshop Projects
+    scannerRevealed: false,
+    scannerBuilt: false,
+
     // scrap
     scrap: 0,
     scrapCap: 50,
@@ -248,6 +252,20 @@ function trainHp() {
     }
 }
 
+function buildScanner() {
+    if (!gs.scannerBuilt && gs.scrap >= 25 && gs.tinkering >= 300) {
+        updateMainStory("You integrate the scanner into your body, you can now see just how tough the enemies you are facing are.");
+        gs.scannerBuilt=true;
+        $('#buildScanner').tooltip('hide');
+        disableButton('buildScanner');
+        gs.scrap-=25;
+        gs.tinkering-=300;
+        reveal('enemyHpContainer');
+    } else {
+        alert('You need 25 scrap and 300 tinkering to integrate the scanner.');
+    }
+}
+
 function tinkeringAction() {
     incStat('tinkering');
     updateActionFeedback('You tinker around with the scrap in the room.');
@@ -279,7 +297,7 @@ function revealInline() {
   }
 }
 
-function revealCaps() {
+function capsReveal() {
     reveal('intelligenceCapContainer', 'trainingCapContainer');
 }
 
@@ -354,12 +372,35 @@ function checkScavengingUnlocks() {
         pulseStrongly();
         updateMainStory("A voice speaks from the amulet: Vitae storage online");
         revealEssence();
+    } else if (gs.scavenging >= 300 && !gs.scannerRevealed && gs.workshopRevealed) {
+        gs.scannerRevealed = true;
+        updateMainStory('While scavenging through your fallen foes you find a particularly intact optic sensor.  You think with a bit of work you should be able to integrate it into your systems.');
+        updateMainStory('Workshop Project Unlocked: Scanner.');
+        pulseGently();
+        revealScanner();
     } else if (gs.scavenging >= gs.scavengingCap) {
         gs.scavengingCap = Math.round(gs.scavengingCap = gs.scavengingCap * gs.capFactor);
         gs.scavenging = 0;
         updateMainStory("You realize that you haven't even really begun to find all of the things your fallen foes could do for you.  While this means you need to start looking through the remains again, you feel like you will do a better job this time.");
         pulseGently();
     }
+}
+
+function revealScanner() {
+    reveal('scannerContainer');
+    $('#buildScanner').click(buildScanner);
+    if (gs.scannerBuilt) {
+        disableButton('buildScanner');
+        reveal('enemyHpContainer');
+    }
+}
+
+function disableButton() {
+ for (i = 0; i < arguments.length; i++) {
+    $('#' + arguments[i])[0].classList.toggle('btn-primary');
+    $('#' + arguments[i])[0].classList.toggle('btn-secondary');
+    $('#' + arguments[i])[0].disabled="true";
+  }
 }
 
 function revealEssence() {
@@ -378,7 +419,7 @@ function checkIntelligenceUnlocks () {
         updateMainStory('You begin to organize your thoughts better.');
         pulseGently();
     } else if (gs.intelligence >= 25 && !gs.capsRevealed) {
-        revealCaps();
+        capsReveal();
         gs.capsRevealed = true;
         pulseStrongly();
         updateMainStory('You are starting to understand the limits of your present existence.');
@@ -437,6 +478,13 @@ function decorateToolTips() {
     if (gs.combatRevealed) {
         $('#hpValue')[0].innerHTML='' + player.hp + '/' + player.totalHp;
         $('#atkValue')[0].innerHTML=player.atk;
+    }
+    if (gs.scannerBuilt) {
+        if (gs.inCombat) {
+            $('#enemyHpContainer')[0].innerHTML='' + mob.hp + '/' + mob.maxHp;
+        } else {
+            $('#enemyHpContainer')[0].innerHTML='';
+        }
     }
     if (gs.deathStatRevealed) {
         $('#deathValue')[0].innerHTML=gs.deaths;
@@ -706,9 +754,13 @@ function trackTime() {
         }
     } else if (!gs.firstCombatWon && gs.tick >= 10) {
         checkFirstCombat();
-    }
-    else if (gs.firstCombatWon && (gs.tick > 15 && gs.tick < 50)) {
+    } else if (gs.firstCombatWon && (gs.tick > 15 && gs.tick < 50)) {
         randomEncounters();
+    } else if (gs.tick >= 100) {
+              resetPhase1();
+              updateMainStory('A blinding flash of energy spills over everything. Red light cracking with a disquieting black lightning overwhelms you.');
+              updateMainStory('This is the work of another of your spirits, it is changing the very environment to be better for this corruption that has been assaulting you.');
+              updateMainStory('Eventually it is too much, and you succumb and die.');
     } else if (gs.firstCombatWon && gs.tick >= 50) {
         updateMainStory("Another spirit comes through the door of the room, eyes burning a fearsome red with ominous black streaks running through them.");
         mob = getMonster(...shardBosses[1]);
@@ -794,7 +846,7 @@ function combatRewards() {
 
 function awardLoot(type, amount) {
     if (amount != 0) {
-        if (gs[type] <= gs[type+'Cap']) {
+        if (gs[type] < gs[type+'Cap']) {
             gs[type] += amount;
             if (gs[type] > gs[type+'Cap']) {
                 gs[type] == gs[type+'Cap'];
@@ -985,9 +1037,11 @@ function buildAutomaton(param) {
 }
 
 function getMonster(name, hp, atk, baseScrap, baseNecroEnergy) {
+    let maxHp = hp;
     return {
         name,
         hp,
+        maxHp,
         atk,
         baseScrap,
         baseNecroEnergy
@@ -1034,7 +1088,7 @@ function hardReset() {
 
 function processUnlocks() {
     if (gs.capsRevealed) {
-        revealCaps();
+        capsReveal();
     }
     if (gs.incRevealed) {
         revealInc();
@@ -1084,6 +1138,10 @@ function processUnlocks() {
 
     if (gs.temporalResearchRevealed) {
         revealTemporalResearch();
+    }
+
+    if (gs.scannerRevealed) {
+        revealScanner();
     }
 }
 
