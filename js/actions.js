@@ -271,7 +271,7 @@ function buildArmor() {
         gs.scrap-=armorCost;
         gs.tinkering-=300;
         player.armorLevel++;
-        player.maxHp+=(player.armorLevel*25)
+        player.totalHp+=(player.armorLevel+1*25)
         updateMainStory('Using the knowledge you gained while scavenging you improve your own exoskeletal plating, significantly improving your total toughness');
         trackTime();
     } else {
@@ -961,6 +961,7 @@ function runCombatIntro() {
 }
 
 function clearCombatInfo() {
+    mob='';
     $('#opponentName')[0].innerHTML = "No Opponent";
     $('#combatStatus')[0].innerHTML = "None";
     $('#combatStatus')[0].classList.remove("bg-danger");
@@ -1130,8 +1131,10 @@ function load() {
     let saveState = store.get("gameState");
     if (saveState != null) { Object.assign(gs, saveState) } else { return false }
 
-    mob = store.get("mob")
-    updateCombatInfo();
+    if (mob !='') {
+        mob = store.get("mob")
+        updateCombatInfo();
+    }
     finishTutorial();
     processUnlocks();
     decorateToolTips();
