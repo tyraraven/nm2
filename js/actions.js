@@ -457,6 +457,14 @@ function disableButton() {
   }
 }
 
+function enableButton() {
+ for (i = 0; i < arguments.length; i++) {
+    $('#' + arguments[i])[0].classList.toggle('btn-primary');
+    $('#' + arguments[i])[0].classList.toggle('btn-secondary');
+    $('#' + arguments[i])[0].disabled="false";
+  }
+}
+
 function revealEssence() {
     reveal('essenceStats');
 }
@@ -646,7 +654,7 @@ function decorateStat(stat) {
 function decorateRobot(stat) {
     var currentCost = gs.baseRobotCost * (gs[stat+'Robot'] + 1);
     $('#'+stat+'RobotValue')[0].innerHTML = 'Total: ' + gs[stat+'Robot'];
-    $('#'+stat+'RobotCost')[0].innerHTML = currentCost + '(Scrap) ' + currentCost + ' (Vitae) ';
+    $('#'+stat+'RobotCost')[0].innerHTML = currentCost + ' (Scrap) ' + currentCost + ' (Vitae) ';
 }
 
 function trainPhase1() {
