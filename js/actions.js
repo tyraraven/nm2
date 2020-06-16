@@ -653,8 +653,8 @@ function decorateStat(stat) {
 
 function decorateRobot(stat) {
     var currentCost = gs.baseRobotCost * (gs[stat+'Robot'] + 1);
-    $('#'+stat+'RobotValue')[0].innerHTML = 'Total: ' + gs[stat+'Robot'];
-    $('#'+stat+'RobotCost')[0].innerHTML = currentCost + ' (Scrap) ' + currentCost + ' (Vitae) ';
+    $('#'+stat+'RobotValue')[0].innerHTML = gs[stat+'Robot'];
+    $('#'+stat+'RobotCost')[0].innerHTML = '<br>' + currentCost + ' (Scrap) ' + currentCost + ' (Vitae) ';
 }
 
 function trainPhase1() {
