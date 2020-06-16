@@ -1021,7 +1021,7 @@ function levelUpCombatSkills() {
 function resetPhase1() {
 
     //Clear the main story text
-    clearMainStory();
+    //clearMainStory();
 
     // Scores
     resetAbilityScores();
