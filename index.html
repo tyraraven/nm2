@@ -27,12 +27,12 @@
     </span>
 </div>
 <div>
-    <span class="row">
+    <div class="row">
         <span class="col-sm-4">
             <textarea class="form-control" rows="15" id="mainStory" style="border: solid;">You awake in complete and total darkness with no idea who you are or how you got there.</textarea>
         </span>
         <span class="col-sm border-dark1">
-            <div id="mainStats" class="" style="display:none">
+            <span id="mainStats" class="" style="display:none">
                     <span class="row justify-content-center">
                         Resources
                     </span>
@@ -88,9 +88,9 @@
                         <span id="scrapStats" class="col-sm border border-dark" style="display:none">Scrap: <span id="scrapValue">0/50</span></span>
                         <span id="essenceStats" class="col-sm border border-dark" style="display:none">Vitae: <span id="essenceValue">0/50</span></span>
                     </span>
-                </div>
+                </span>
         </span>
-        <span class="col-sm border border-dark1">
+        <nav class="col-sm border border-dark1">
             <ul class="nav nav-tabs">
                 <!-- <li class="nav-item" id="mainStatsTab" style="display:none">
                     <a class="nav-link active" data-toggle="tab" href="#mainStats">Statistics</a>
@@ -103,8 +103,8 @@
                 </li>
             </ul>
 
-            <div class="tab-content">
-                <div class="tab-pane active" id="automation" style="display: none;">
+            <span class="tab-content">
+                <span class="tab-pane active" id="automation" style="display: none;">
                     <span class="row align-items-center border border-dark" id="temporalResearchContainer" style="display:none;">
                         <span class="col-sm ">Seek Temporal Link: <span id="temporalResearchValue"> 0/1000</span> (Int)</span>
                         <span class="col-sm">
@@ -131,9 +131,9 @@
                             <button id="automateScavenging" class="btn-sm btn-primary">Create</button>
                         </span>
                     </span>
-                </div>
+                </span>
 
-                <div class="tab-pane " id="workshop">
+                <span class="tab-pane " id="workshop">
                     <span class="row align-items-center border border-dark">
                         <span id="scannerFlavor" class="col-sm-3"></span>
                         <span id="scannerContainer" style="display:none;" class="col-sm-2 border-right border-dark">
@@ -154,10 +154,10 @@
                         </span>
 
                     </span>
-                </div>
-            </div>
-        </span>
-    </span>
+                </span>
+            </span>
+        </nav>
+    </div>
 </div>
 <div id="enemyStats" style="display:none; " >
     <span class="border row justify-content-center">
@@ -169,7 +169,7 @@
             <span id="enemyHpContainer" style="display:none;"></span>
             <span id="opponentName"></span>
         </span>
-        <span class="col-sm border border-dark"><img id="monsterImage"src=""><img id="stupidHack" src="./images/Nothing.gif"></span>
+        <span class="col-sm border border-dark"><img id="monsterImage" src=""><img id="stupidHack" src="./images/Nothing.gif"></span>
     </span>
 
 </div>
