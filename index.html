@@ -50,7 +50,7 @@
                         </span>
                         <span class="col-sm-2"><button id="trainAutoTrainingInc" class="btn-sm btn-primary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Infuse</button></span>
                     </span>
-                    <span class="row align-items-center border border-dark">
+                    <span id="secondSkills" class="row align-items-center border border-dark" style="display:none;">
                         <span id="tinkeringStat" style="display:none" class="col-sm">Tinkering: <span id="tinkeringValue" >0</span>
                             <span>/ <span id="tinkeringCap">0</span></span>
                             <span>(<span id="tinkeringInc">0</span>/C)</span>
@@ -71,7 +71,7 @@
                     <span id="deathStat" class="row" style="display:none">
                         <span class="col-sm border border-dark">Temporal Energy: <span id="deathValue">1</span></span>
                     </span>
-                    <span class="row justify-content-center">
+                    <span id="combatHeader" class="row justify-content-center" style="display: none">
                         Battle Statistics
                     </span>
                     <span id="combat" class="row border border-dark align-items-center" style="display:none">
@@ -104,7 +104,7 @@
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane active" id="automation">
+                <div class="tab-pane active" id="automation" style="display: none;">
                     <span class="row align-items-center border border-dark" id="temporalResearchContainer" style="display:none;">
                         <span class="col-sm ">Seek Temporal Link: <span id="temporalResearchValue"> 0/1000</span> (Int)</span>
                         <span class="col-sm">

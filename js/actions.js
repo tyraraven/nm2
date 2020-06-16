@@ -665,7 +665,7 @@ function trainPhase1() {
 }
 
 function revealCombat() {
-    reveal('combat');
+    reveal('combatHeader', 'combat');
 }
 
 function checkTrainingUnlocks () {
@@ -806,7 +806,7 @@ function runCombatRound() {
 }
 
 function revealBoss1Stats() {
-        reveal('tinkeringStat','tinker','scavengingStat','scavenge');
+        reveal('secondSkills', 'tinkeringStat','tinker','scavengingStat','scavenge');
 }
 
 function trackTime() {
@@ -1098,6 +1098,7 @@ function updateMainStory(message) {
 
 function revealAutomation() {
     reveal('automationActions');
+    reveal('automation');
     $('#automateInt').click(buildAutomaton('intelligence'));
     $('#automateTraining').click(buildAutomaton('training'));
     $('#automateTinkering').click(buildAutomaton('tinkering'));
