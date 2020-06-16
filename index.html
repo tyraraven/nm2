@@ -36,13 +36,13 @@
                     <span class="row justify-content-center">
                         Resources
                     </span>
-                    <span class="row align-items-center border">
+                    <span class="row align-items-center border border-dark">
                         <span class="col-sm">Intelligence: <span id="intelligenceValue">0</span>
                             <span id="intelligenceCapContainer" style="display:none">/ <span id="intelligenceCap">0</span></span>
                             <span id="intelligenceIncContainer" style="display:none">   (<span id="intelligenceInc">0</span>/C)</span>
                             <span id="intelligenceAutoIncContainer" style="display:none"> (<span id="intelligenceAutoInc">0</span>/T)</span>
                         </span>
-                        <span class="col-sm-2"><button id="trainAutoIntelligenceInc" style="float: right" class="btn-sm btn-primary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy ">Infuse</button></span>
+                        <span class="col-sm-2 border-right border-dark"><button id="trainAutoIntelligenceInc" style="float: right" class="btn-sm btn-primary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy ">Infuse</button></span>
                         <span class="col-sm">Training: <span id="trainingValue" >0</span>
                             <span id="trainingCapContainer" style="display:none">/ <span id="trainingCap">0</span></span>
                             <span id="trainingIncContainer" style="display:none"> (<span id="trainingInc">0</span>/C)</span>
@@ -50,18 +50,23 @@
                         </span>
                         <span class="col-sm-2"><button id="trainAutoTrainingInc" style="float: right" class="btn-sm btn-primary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Infuse</button></span>
                     </span>
-                    <span class="row">
-                        <span id="tinkeringStat" style="display:none" class="col-sm border border-dark">Tinkering: <span id="tinkeringValue" >0</span>
-                        <span>/ <span id="tinkeringCap">0</span></span>
-                        <span>(<span id="tinkeringInc">0</span>/C)</span>
-                        <span id="tinkeringAutoIncContainer"> (<span id="tinkeringAutoInc">0</span>/T)</span>
-                        <button id="tinkeringAutoTrainingInc" style="float:right" class="btn-sm btn-primary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Infuse</button></span>
-
-                        <span id="scavengingStat" style="display:none" class="col-sm border border-dark">Scavenging: <span id="scavengingValue" >0</span>
-                        <span>/ <span id="scavengingCap">0</span></span>
-                        <span > (<span id="scavengingInc">0</span>/C)</span>
-                        <span id="scavengingAutoIncContainer"> (<span id="scavengingAutoInc">0</span>/T)</span>
-                        <button id="scavengingAutoTrainingInc" style="float:right" class="btn-sm btn-primary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Infuse</button></span>
+                    <span class="row align-items-center border border-dark">
+                        <span id="tinkeringStat" style="display:none" class="col-sm">Tinkering: <span id="tinkeringValue" >0</span>
+                            <span>/ <span id="tinkeringCap">0</span></span>
+                            <span>(<span id="tinkeringInc">0</span>/C)</span>
+                            <span id="tinkeringAutoIncContainer"> (<span id="tinkeringAutoInc">0</span>/T)</span>
+                        </span>
+                        <span class="col-sm-2 border-right border-dark">
+                            <button id="tinkeringAutoTrainingInc" style="float:right" class="btn-sm btn-primary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Infuse</button>
+                        </span>
+                        <span id="scavengingStat" style="display:none" class="col-sm">Scavenging: <span id="scavengingValue" >0</span>
+                            <span>/ <span id="scavengingCap">0</span></span>
+                            <span > (<span id="scavengingInc">0</span>/C)</span>
+                            <span id="scavengingAutoIncContainer"> (<span id="scavengingAutoInc">0</span>/T)</span>
+                        </span>
+                        <span class="col-sm-2">
+                            <button id="scavengingAutoTrainingInc" style="float:right" class="btn-sm btn-primary" data-toggle="tooltip" data-placement="right" title="10 Temporal Energy">Infuse</button>
+                        </span>
                     </span>
                     <span id="deathStat" class="row" style="display:none">
                         <span class="col-sm border border-dark">Temporal Energy: <span id="deathValue">1</span></span>
