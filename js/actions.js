@@ -135,7 +135,7 @@ var gs = {
 
 var shardBosses = [];
 shardBosses.push(["Strange Creature", 10, 5, 1, 0, 'Spirit_1.gif']);
-shardBosses.push(["Corrupted Spirit (Not Finished)", 15000, 15, 10, 10, 'Spirit_1.gif']);
+shardBosses.push(["Corrupted Spirit (Not Finished)", 15000, 15, 10, 10, 'Spirit_2.gif']);
 
 // Random Encounters Phase1
 var randomEncountersArray = [];
